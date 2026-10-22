@@ -441,6 +441,7 @@ trusted agents and serve the console over HTTPS before connecting one remotely.
 | `OMCPA_PUBLIC_URL` | unset | The address browsers use; `https://` marks the session cookie `Secure` |
 | `OMCPA_USAGE_INGEST_MODE` | `auto` | `off` when another service collects this CPA's usage |
 | `TZ` | system zone | Server calendar; keep it equal to CPA's. Containers default to UTC |
+| `OMCPA_PORTAL_ENABLED` | `false` | Customer portal at `<base>/portal`: customer accounts that issue their own keys into CPA and read their own usage (ADR 0105) |
 
 The full reference, with deployment constraints and operational notes, is
 [`docs/operations.md`](docs/operations.md).

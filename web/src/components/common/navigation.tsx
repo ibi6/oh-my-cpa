@@ -15,12 +15,17 @@ import {
   RobotOutlined,
   SettingOutlined,
   BlockOutlined,
+  createIcon,
+  Users,
 } from '../icons';
 import { PLUGIN_PAGE_ROUTE_PREFIX, type PluginPageEntry } from '../plugins/pluginPages';
 import { PluginIcon } from '../plugins/PluginIcon';
 import type { NavEntry, NavGroup } from '../../types/sidebarNav';
 
 export { PLUGIN_PAGE_ROUTE_PREFIX };
+
+/** The customer accounts of the portal (ADR 0105). */
+const UsersOutlined = createIcon(Users);
 
 /**
  * The rail's fixed destinations, grouped the way the console reasons about them: what it runs,
@@ -52,6 +57,7 @@ export const STATIC_NAV_GROUPS: readonly NavGroup[] = [
       // Authentication, credential management and quota are one credential-centred workspace.
       { key: '/oauth-management', labelKey: 'nav.auth_files', icon: <LoginOutlined /> },
       { key: '/api-keys', labelKey: 'nav.api_keys', icon: <KeyOutlined /> },
+      { key: '/portal-users', labelKey: 'nav.portal_users', icon: <UsersOutlined /> },
     ],
   },
   {

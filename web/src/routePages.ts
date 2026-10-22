@@ -57,5 +57,8 @@ export const PluginPageHost = React.lazy(loadPluginPageHost);
 export const loadPluginsPage = createPageLoader(() => import('./pages/PluginsPage'), 'PluginsPage');
 export const PluginsPage = React.lazy(loadPluginsPage);
 
+export const loadPortalUsersPage = createPageLoader(() => import('./pages/portal/PortalUsersPage'), 'PortalUsersPage');
+export const PortalUsersPage = React.lazy(loadPortalUsersPage);
+
 export const loadOmcSettingsPage = createPageLoader(() => import('./pages/OmcSettingsPage'), 'OmcSettingsPage');
 export const OmcSettingsPage = React.lazy(loadOmcSettingsPage);

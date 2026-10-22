@@ -18,6 +18,8 @@ export const DEMO_ROUTES = [
   { path: '/plugins', heading: '插件管理', reads: ['/management/plugins'], content: '[data-plugin-status]' },
   { path: '/plugins/store', heading: '插件管理', reads: ['/management/plugins', '/management/plugin-store'], content: '[data-plugin-panel="store"]' },
   { path: '/plugins/settings', heading: '插件管理', reads: ['/management/plugins', '/management/plugins/settings'], content: '[data-plugin-panel="settings"]' },
+  // Every portal route is refused in the demonstration, so the page states that instead of reading.
+  { path: '/portal-users', heading: '客户账户', reads: [], content: '[data-testid="portal-users-demo"]' },
   { path: '/system', heading: '系统信息', reads: ['/management/system'], content: '[data-testid="sys-card-versions"]' },
 ];
 

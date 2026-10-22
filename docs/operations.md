@@ -76,6 +76,19 @@ a message naming the variable.
 | `OMCPA_UPDATER_URL` | `http://oh-my-cpa-updater:8090` | Where the console looks for the updater. The default is the service and container name every install method uses |
 | `OMCPA_GOOGLE_FONTS_URL` | `https://fonts.googleapis.com` | The Google Fonts stylesheet API the font library installs from, or a compatible mirror for a deployment that cannot reach Google. Requests honour `HTTPS_PROXY`; font files are downloaded only from Google's font hosts or the mirror's own site. Used only when an operator installs a family; uploading needs no network |
 
+### Customer portal
+
+The customer portal (ADR 0105) is off unless enabled. See [Customer portal](#customer-portal).
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `OMCPA_PORTAL_ENABLED` | `false` | Serve the customer portal at `<base>/portal` and the Customers page in the console. Forced off in demo mode |
+| `OMCPA_PORTAL_REGISTRATION` | `off` | `off` (accounts are created by the operator only), `invite` (registration needs an operator-issued invite code) or `open` |
+| `OMCPA_PORTAL_SESSION_TTL` | `168h` | Lifetime of a customer sign-in, `5m` to `2160h` |
+| `OMCPA_PORTAL_GATEWAY_URL` | unset | The gateway base URL customers are shown (for example `https://api.example.com/v1`). `http`/`https` without credentials |
+| `OMCPA_PORTAL_SHOW_COST` | `true` | Whether customers see the locked request cost estimate |
+| `OMCPA_PORTAL_SYNC_INTERVAL` | `1m` | How often portal keys are reconciled with CPA's `access.api-keys`, at least `10s` |
+
 The MCP stdio bridge (`oh-my-cpa mcp`) reads `OMCPA_SERVER_URL`,
 `OMCPA_CPA_MANAGEMENT_KEY` and the optional `OMCPA_VERSION` only; the remote MCP
 endpoint has no setting of its own. See [Agent and MCP](#agent-and-mcp).
@@ -656,3 +669,33 @@ supplied. The public demonstration refuses consuming and policy-write routes.
 
 Warmup round ordering is oldest observation first. Fleets exceeding a round's capacity
 remain queued rather than increasing concurrency or skipping protection.
+
+## Customer portal
+
+The customer portal (ADR 0105) gives customers their own sign-in at
+`<OMCPA_PUBLIC_URL><base>/portal`, separate from the operator's console session.
+With `OMCPA_PORTAL_ENABLED=true`:
+
+1. Open **Customers** in the console navigation and create an account (username,
+   initial password, optional key limit), or issue an invite code when
+   `OMCPA_PORTAL_REGISTRATION=invite`.
+2. The customer signs in at `<base>/portal`, creates an API key (`sk-omc-…`, shown
+   once) and calls the gateway at `OMCPA_PORTAL_GATEWAY_URL` with it as the bearer
+   token. The key is appended to CPA's `access.api-keys` through the same audited,
+   backed-up write the API key page uses, and named `portal:<user>/<key>` there.
+3. Requests made with the key are attributed to the account as they are ingested.
+   The customer sees their own records and daily totals; the operator sees per-account
+   totals on the Customers page and can filter the request log by customer.
+
+Disabling an account ends its sessions and removes its keys from CPA; revoking a key
+removes it from CPA. A key that disappears from CPA by other means is shown to the
+customer as missing and must be re-issued, because its plaintext is not stored.
+Turning the portal off leaves already-issued keys in CPA.
+
+The portal does not meter or limit usage and has no balance or billing; it attributes
+and reports usage only.
+
+Customer routes are under `<base>/api/portal` (cookie `omc_portal_session`); the
+operator's account management is under the configured API prefix at `/portal/*`
+(`status`, `users`, `users/{id}`, `users/{id}/keys`, `users/{id}/usage`, `keys/{id}`,
+`invites`, `invites/{id}`, `sync`), audited as `portal.*`.

@@ -372,6 +372,7 @@ export const UsageEventsPage: React.FC = () => {
     resolved_service_tier: 'events.filter_chip_resolved_service_tier',
     source: 'events.filter_chip_source',
     api_key: 'events.filter_chip_caller',
+    portal_user: 'events.filter_chip_portal_user',
     executor: 'events.filter_chip_executor',
     q: 'events.filter_chip_search',
     ua: 'events.filter_chip_ua',
@@ -409,6 +410,7 @@ export const UsageEventsPage: React.FC = () => {
           [...credentials].map(([index, file]) => [index, file?.name] as const),
         ),
         callerFacets: facets.data?.facets.api_group_keys,
+        portalUserFacets: facets.data?.facets.portal_users,
         resolveProviderName: providerName,
         costLabels: {
           priced: t('events.cost_priced'),
