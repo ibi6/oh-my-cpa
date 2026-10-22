@@ -23,7 +23,7 @@ MCP · 可视化 · 管理
 <br />
 
 **[Live Demo](https://omc-demo.junze.dev)** ·
-**[全原生双角色演示（静态 UI）](https://ibi6.github.io/oh-my-cpa/portal-demo/?v=native-dual)** ·
+**[全原生双角色演示（静态 UI）](https://ibi6.github.io/oh-my-cpa/portal-demo/?v=customer-rich)** ·
 [安装](#安装) ·
 [功能特性](#功能特性) ·
 [智能体与 MCP](#智能体与-mcp) ·
@@ -45,7 +45,7 @@ OMC 是单个 Go 二进制文件，内嵌 React 控制台，数据存放在本�
 > [!TIP]
 > **[立即体验 Live Demo](https://omc-demo.junze.dev)**
 
-> 本 fork 另提供 [全原生双角色静态演示](https://ibi6.github.io/oh-my-cpa/portal-demo/?v=native-dual)：管理员进原生控制台壳（含客户账户），客户仅进门户页。页面使用演示数据，**不会**连接真实 CPA 或同步密钥。
+> 本 fork 另提供 [全原生双角色静态演示](https://ibi6.github.io/oh-my-cpa/portal-demo/?v=customer-rich)：管理员进原生控制台壳（含客户账户）；客户门户含趋势图、密钥一次性明文、用量筛选、网关接入说明与演示钱包。页面使用演示数据，**不会**连接真实 CPA 或同步密钥。
 
 ## 界面截图
 

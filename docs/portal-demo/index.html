@@ -189,10 +189,46 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
   .desktop-only { display:none!important; }
   .terminal-page { padding:24px 16px 40px; }
 }
+
+.filters { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; margin-bottom:4px; }
+.filters .field { margin:0; min-width:140px; }
+.filters select,.filters input { width:100%; height:32px; padding:0 10px; border:1px solid var(--border); border-radius:var(--radius-control); background:var(--bg); }
+.chart-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+.chart-card { border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--bg); padding:16px 16px 12px; }
+.chart-card-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; gap:8px; }
+.chart-card-head h3 { margin:0; font-size:var(--text-md); font-weight:600; }
+.chart-card-head .chart-val { font-size:var(--text-lg); font-weight:600; font-variant-numeric:tabular-nums; }
+.chart-svg { width:100%; height:120px; display:block; }
+.chart-svg .grid-line { stroke:var(--border-soft); stroke-width:1; }
+.chart-svg .area { fill:color-mix(in srgb,var(--accent) 18%,transparent); }
+.chart-svg .line { fill:none; stroke:var(--accent); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.chart-svg .dot { fill:var(--accent); }
+.chart-axis { display:flex; justify-content:space-between; color:var(--meta); font-size:var(--text-xs); margin-top:4px; }
+.howto { display:flex; flex-direction:column; gap:12px; }
+.howto-row { display:flex; flex-direction:column; gap:6px; }
+.howto-label { font-size:var(--text-sm); color:var(--muted); }
+.code-block { position:relative; padding:12px 14px; border-radius:var(--radius-md); border:1px solid var(--border); background:color-mix(in srgb,var(--fg) 4%,var(--bg)); font-family:var(--font-mono); font-size:var(--text-sm); overflow:auto; white-space:pre; line-height:1.55; }
+.code-block .copy-inline { position:absolute; top:8px; right:8px; }
+.wallet-balance { display:flex; align-items:flex-end; gap:12px; flex-wrap:wrap; }
+.wallet-balance .amt { font-size:28px; font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+.wallet-balance .unit { color:var(--muted); font-size:var(--text-md); margin-bottom:4px; }
+.redeem-row { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end; }
+.redeem-row .field { flex:1; min-width:180px; margin:0; }
+.row-detail { background:color-mix(in srgb,var(--fg) 3%,transparent); }
+.row-detail td { padding:0 16px 14px !important; border-bottom:1px solid var(--border-soft); }
+.row-detail-inner { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px 20px; padding-top:4px; font-size:var(--text-sm); }
+.row-detail-inner dt { color:var(--muted); font-size:var(--text-xs); margin-bottom:2px; }
+.row-detail-inner dd { margin:0; font-weight:500; font-variant-numeric:tabular-nums; word-break:break-word; }
+.data-table tbody tr.clickable { cursor:pointer; }
+.data-table tbody tr.clickable.open td { background:color-mix(in srgb,var(--accent) 6%,transparent); }
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:60; padding:10px 16px; border-radius:var(--radius-md); background:var(--elevated); border:1px solid var(--border); box-shadow:var(--shadow-float); font-size:var(--text-md); }
+.modal.wide { width:min(560px,100%); }
+.secret.warn-once { border:1px solid color-mix(in srgb,var(--warn) 40%,transparent); background:color-mix(in srgb,var(--warn) 8%,transparent); }
+
 </style>
 </head>
 <body>
-<div class="banner"><strong>静态 UI 演示 · 演示数据</strong> — 全原生控制台 / 门户壳；权限不同。不连接真实 CPA。
+<div class="banner"><strong>静态 UI 演示 · 演示数据</strong> — 全原生双角色；客户侧含趋势图 / 密钥流程 / 用量筛选 / 接入说明 / 钱包。不连接真实 CPA。
 <a href="https://github.com/ibi6/oh-my-cpa/tree/feat/distribution-p1" target="_blank" rel="noopener">源码</a></div>
 <div id="app"></div>
 <script>
@@ -268,6 +304,7 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
       { path: '/portal/usage', label: '使用记录', icon: 'hist' },
     ]},
     { group: '账户', items: [
+      { path: '/portal/wallet', label: '钱包', icon: 'dollar' },
       { path: '/portal/account', label: '账户', icon: 'account' },
     ]},
   ];
@@ -277,16 +314,22 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
     { id: 2, username: 'acme', display: 'Acme Labs', status: 'active', keys: 4, req: 9204, cost: 412.08, last: '2026-10-22 13:02' },
     { id: 3, username: 'nova', display: 'Nova AI', status: 'disabled', keys: 0, req: 120, cost: 3.10, last: '2026-10-10 09:41' },
   ];
-  const portalKeys = [
+  let portalKeys = [
     { id: 1, name: '笔记本', prefix: 'sk-omc-RDkO', last4: 'yADn', state: 'active', requests: 1284, last_used: '2026-10-22 14:18', created: '2026-10-20 09:12' },
     { id: 2, name: 'CI', prefix: 'sk-omc-7pQm', last4: 'k2Lx', state: 'active', requests: 532, last_used: '2026-10-22 11:02', created: '2026-10-18 16:40' },
     { id: 3, name: '旧手机', prefix: 'sk-omc-ab12', last4: '9Zq1', state: 'revoked', requests: 88, last_used: '2026-10-12 08:21', created: '2026-09-30 10:00' },
   ];
-  const portalEvents = [
-    { time: '2026-10-22 14:18:02', key: '笔记本', model: 'claude-sonnet-4', result: '200', input: 4200, output: 910, latency: '1.8s', cost: 0.042 },
-    { time: '2026-10-22 14:12:41', key: 'CI', model: 'gpt-5', result: '200', input: 1800, output: 640, latency: '1.1s', cost: 0.021 },
-    { time: '2026-10-22 13:55:09', key: '笔记本', model: 'claude-sonnet-4', result: '失败 429', input: 0, output: 0, latency: '0.2s', cost: 0 },
-    { time: '2026-10-22 13:40:17', key: '笔记本', model: 'gemini-2.5-pro', result: '200', input: 2600, output: 720, latency: '2.4s', cost: 0.015 },
+  let portalEvents = [
+    { id: 1, time: '2026-10-22 14:18:02', key: '笔记本', model: 'claude-sonnet-4', ok: true, result: '200', input: 4200, output: 910, latency_ms: 1820, cost: 0.042, error: '' },
+    { id: 2, time: '2026-10-22 14:12:41', key: 'CI', model: 'gpt-5', ok: true, result: '200', input: 1800, output: 640, latency_ms: 1104, cost: 0.021, error: '' },
+    { id: 3, time: '2026-10-22 13:55:09', key: '笔记本', model: 'claude-sonnet-4', ok: false, result: '429', input: 0, output: 0, latency_ms: 210, cost: 0, error: 'rate_limit_exceeded: 上游限流，请稍后重试' },
+    { id: 4, time: '2026-10-22 13:40:17', key: '笔记本', model: 'gemini-2.5-pro', ok: true, result: '200', input: 2600, output: 720, latency_ms: 2410, cost: 0.015, error: '' },
+    { id: 5, time: '2026-10-22 12:08:33', key: 'CI', model: 'claude-sonnet-4', ok: true, result: '200', input: 3100, output: 880, latency_ms: 1560, cost: 0.031, error: '' },
+    { id: 6, time: '2026-10-22 11:02:11', key: 'CI', model: 'gpt-5', ok: false, result: '401', input: 0, output: 0, latency_ms: 88, cost: 0, error: 'invalid_api_key: 密钥已撤销或无效' },
+    { id: 7, time: '2026-10-21 22:14:55', key: '笔记本', model: 'gpt-5', ok: true, result: '200', input: 920, output: 410, latency_ms: 980, cost: 0.009, error: '' },
+    { id: 8, time: '2026-10-21 18:33:02', key: '笔记本', model: 'claude-sonnet-4', ok: false, result: '500', input: 1500, output: 0, latency_ms: 5200, cost: 0, error: 'upstream_error: provider timeout after 5s' },
+    { id: 9, time: '2026-10-21 09:41:18', key: '旧手机', model: 'gemini-2.5-pro', ok: true, result: '200', input: 1100, output: 300, latency_ms: 1320, cost: 0.006, error: '' },
+    { id: 10, time: '2026-10-20 16:05:44', key: 'CI', model: 'claude-sonnet-4', ok: true, result: '200', input: 5400, output: 1200, latency_ms: 2100, cost: 0.055, error: '' },
   ];
   const adminKeys = [
     { name: 'ops-main', mask: 'sk-ops-••••••a1', requests: 22010 },
@@ -294,10 +337,42 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
     { name: 'portal:trial/笔记本', mask: 'sk-omc-RDkO…yADn', requests: 1284 },
   ];
 
+  // 近 14 日趋势（演示）
+  const dailyTrend = (() => {
+    const days = [];
+    const base = new Date('2026-10-22T00:00:00+08:00');
+    const reqs = [92, 110, 88, 125, 140, 98, 76, 155, 168, 132, 145, 170, 158, 181];
+    const toks = [1.8, 2.1, 1.6, 2.4, 2.9, 1.9, 1.4, 3.2, 3.5, 2.7, 3.0, 3.8, 3.4, 4.1]; // M
+    const costs = [3.2, 4.1, 2.9, 5.0, 6.2, 3.8, 2.5, 7.1, 7.8, 5.6, 6.4, 8.2, 7.4, 8.9];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(base); d.setDate(base.getDate() - i);
+      const label = `${d.getMonth()+1}/${d.getDate()}`;
+      days.push({ label, requests: reqs[13-i], tokens_m: toks[13-i], cost: costs[13-i] });
+    }
+    return days;
+  })();
+
+  const GATEWAY_BASE = 'https://api.example.com/v1';
+  const DEMO_REDEEM_CODES = { 'OMC-DEMO-100': 100, 'TRY-ME-50': 50, 'WELCOME-20': 20 };
+
+  let walletBalance = 128.50;
+  let walletLedger = [
+    { time: '2026-10-22 10:02', type: 'redeem', label: '兑换码 OMC-DEMO-100', amount: 100.00, balance: 128.50 },
+    { time: '2026-10-21 18:33', type: 'usage', label: '用量扣费 · claude-sonnet-4', amount: -0.055, balance: 28.50 },
+    { time: '2026-10-20 16:05', type: 'usage', label: '用量扣费 · CI 批次', amount: -1.20, balance: 28.555 },
+    { time: '2026-10-18 09:00', type: 'grant', label: '试用赠送', amount: 30.00, balance: 29.755 },
+    { time: '2026-10-15 14:22', type: 'usage', label: '用量扣费', amount: -0.245, balance: -0.245 },
+  ];
+
   let loginRole = 'admin';
   let authError = '';
   let issuedSecret = null;
   let createOpen = false;
+  let revokeTarget = null;
+  let usageFilter = { key: '', model: '', result: '' };
+  let usageDetailId = null;
+  let toastMsg = '';
+  let redeemMsg = '';
   let mobileNavOpen = false;
   let collapsed = localStorage.getItem(COLLAPSE_KEY) === '1';
 
@@ -404,6 +479,8 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
       </div>
       ${createOpen ? renderCreateModal() : ''}
       ${issuedSecret ? renderIssuedModal() : ''}
+      ${revokeTarget ? renderRevokeModal() : ''}
+      ${toastMsg ? `<div class="toast" role="status">${toastMsg}</div>` : ''}
     `;
     bindShell(auth);
   }
@@ -425,7 +502,7 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
                 <div><b>管理员</b><span>进入原生控制台壳：运行 / 网关（含客户账户）/ 观测 / 插件 / 控制</span></div>
               </button>
               <button type="button" class="role-pick${loginRole==='customer'?' active':''}" data-role="customer">
-                <div><b>客户</b><span>只进客户门户：概览 / API 密钥 / 使用记录 / 账户，看不到管理菜单</span></div>
+                <div><b>客户</b><span>只进客户门户：概览 / 密钥 / 用量 / 钱包 / 账户，看不到管理菜单</span></div>
               </button>
             </div>
             <form id="login-form">
@@ -466,6 +543,7 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
     if (auth.role === 'customer') {
       if (path.startsWith('/portal/keys')) return pagePortalKeys();
       if (path.startsWith('/portal/usage')) return pagePortalUsage();
+      if (path.startsWith('/portal/wallet')) return pagePortalWallet();
       if (path.startsWith('/portal/account')) return pagePortalAccount(auth);
       return pagePortalOverview(auth);
     }
@@ -598,18 +676,85 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
       </dl></div>`;
   }
 
+  function sparkline(values, opts = {}) {
+    const w = 320, h = 120, padX = 4, padY = 10;
+    const max = Math.max(...values, 0.0001);
+    const min = Math.min(...values, 0);
+    const span = Math.max(max - min, max * 0.08, 0.0001);
+    const n = values.length;
+    const pts = values.map((v, i) => {
+      const x = padX + (n === 1 ? w/2 : (i / (n - 1)) * (w - padX * 2));
+      const y = h - padY - ((v - min) / span) * (h - padY * 2);
+      return [x, y];
+    });
+    const line = pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+    const area = `${line} L${pts[pts.length-1][0].toFixed(1)},${h - padY} L${pts[0][0].toFixed(1)},${h - padY} Z`;
+    const last = pts[pts.length - 1];
+    return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+      <line class="grid-line" x1="${padX}" y1="${h/2}" x2="${w-padX}" y2="${h/2}" />
+      <path class="area" d="${area}" />
+      <path class="line" d="${line}" />
+      <circle class="dot" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3" />
+    </svg>`;
+  }
+
+  function keyStateTag(state) {
+    if (state === 'active') return '<span class="tag is-success is-small">可用</span>';
+    if (state === 'revoked') return '<span class="tag is-danger is-small">已撤销</span>';
+    return `<span class="tag is-small">${state}</span>`;
+  }
+
   function pagePortalOverview(auth) {
+    const reqTotal = dailyTrend.reduce((s, d) => s + d.requests, 0);
+    const tokTotal = dailyTrend.reduce((s, d) => s + d.tokens_m, 0);
+    const costTotal = dailyTrend.reduce((s, d) => s + d.cost, 0);
+    const curl = `curl ${GATEWAY_BASE}/chat/completions \\
+  -H "Authorization: Bearer sk-omc-••••" \\
+  -H "Content-Type: application/json" \\
+  -d '{"model":"claude-sonnet-4","messages":[{"role":"user","content":"hi"}]}'`;
     return `
       <div class="terminal-page-head"><div class="terminal-page-heading">
         <h1 class="terminal-title">${auth.display_name || auth.username}，你好</h1>
-        <p class="terminal-subtitle">你的 API 使用情况 · 演示数据</p>
+        <p class="terminal-subtitle">近 14 日用量趋势 · 演示数据</p>
       </div></div>
-      <div class="omc-notice">接入地址（演示）：<code class="mono">https://api.example.com/v1</code></div>
       <div class="stats">
-        <div class="stat-tile"><div class="stat-tile-label">近 30 天请求</div><div class="stat-tile-value">${fmt(1816)}</div><div class="stat-tile-meta">失败 23</div></div>
-        <div class="stat-tile"><div class="stat-tile-label">近 30 天 Token</div><div class="stat-tile-value">${fmtTokens(42580000)}</div></div>
-        <div class="stat-tile"><div class="stat-tile-label">近 30 天费用</div><div class="stat-tile-value">${fmtUSD(86.42)}</div></div>
-        <div class="stat-tile"><div class="stat-tile-label">最近 24 小时</div><div class="stat-tile-value">${fmt(96)}</div></div>
+        <div class="stat-tile"><div class="stat-tile-label">近 14 日请求</div><div class="stat-tile-value">${fmt(reqTotal)}</div><div class="stat-tile-meta">日均 ${fmt(Math.round(reqTotal/14))}</div></div>
+        <div class="stat-tile"><div class="stat-tile-label">近 14 日 Token</div><div class="stat-tile-value">${tokTotal.toFixed(1)}M</div><div class="stat-tile-meta">合计约 ${fmtTokens(tokTotal*1e6)}</div></div>
+        <div class="stat-tile"><div class="stat-tile-label">近 14 日费用</div><div class="stat-tile-value">${fmtUSD(costTotal)}</div><div class="stat-tile-meta">钱包余额 ${fmtUSD(walletBalance)}</div></div>
+        <div class="stat-tile"><div class="stat-tile-label">可用密钥</div><div class="stat-tile-value">${portalKeys.filter(k=>k.state==='active').length}</div><div class="stat-tile-meta">上限 5</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-card-head"><h3>请求 / 日</h3><span class="chart-val">${fmt(dailyTrend.at(-1).requests)}</span></div>
+          ${sparkline(dailyTrend.map(d => d.requests))}
+          <div class="chart-axis"><span>${dailyTrend[0].label}</span><span>${dailyTrend.at(-1).label}</span></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-head"><h3>Token / 日</h3><span class="chart-val">${dailyTrend.at(-1).tokens_m.toFixed(1)}M</span></div>
+          ${sparkline(dailyTrend.map(d => d.tokens_m))}
+          <div class="chart-axis"><span>${dailyTrend[0].label}</span><span>${dailyTrend.at(-1).label}</span></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-head"><h3>费用 / 日</h3><span class="chart-val">${fmtUSD(dailyTrend.at(-1).cost)}</span></div>
+          ${sparkline(dailyTrend.map(d => d.cost))}
+          <div class="chart-axis"><span>${dailyTrend[0].label}</span><span>${dailyTrend.at(-1).label}</span></div>
+        </div>
+      </div>
+      <div class="panel howto">
+        <div class="panel-title">网关接入</div>
+        <div class="howto-row">
+          <div class="howto-label">Base URL</div>
+          <div class="code-block"><button type="button" class="btn btn-ghost btn-sm copy-inline" data-copy="${GATEWAY_BASE}">复制</button>${GATEWAY_BASE}</div>
+        </div>
+        <div class="howto-row">
+          <div class="howto-label">鉴权头</div>
+          <div class="code-block"><button type="button" class="btn btn-ghost btn-sm copy-inline" data-copy="Authorization: Bearer sk-omc-YOUR_KEY">复制</button>Authorization: Bearer sk-omc-&lt;your-key&gt;</div>
+        </div>
+        <div class="howto-row">
+          <div class="howto-label">示例请求</div>
+          <div class="code-block"><button type="button" class="btn btn-ghost btn-sm copy-inline" data-copy-id="curl-example">复制</button><span id="curl-example">${curl.replace(/</g,'&lt;')}</span></div>
+        </div>
+        <p class="footer-note" style="margin:0">在「API 密钥」创建后，把明文密钥填入 Bearer；OpenAI 兼容客户端将 base_url 设为上方地址即可。</p>
       </div>
       <div class="grid-two">
         <div class="panel"><div class="panel-title">按模型</div>
@@ -617,13 +762,15 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
           <tbody>
             <tr><td class="mono">claude-sonnet-4</td><td class="num">980</td><td class="num">$52.10</td></tr>
             <tr><td class="mono">gpt-5</td><td class="num">610</td><td class="num">$28.40</td></tr>
+            <tr><td class="mono">gemini-2.5-pro</td><td class="num">226</td><td class="num">$5.92</td></tr>
           </tbody></table></div>
         </div>
         <div class="panel"><div class="panel-title">按密钥</div>
-          <div class="data-table"><table><thead><tr><th>密钥</th><th class="num">请求</th><th class="num">费用</th></tr></thead>
+          <div class="data-table"><table><thead><tr><th>密钥</th><th>状态</th><th class="num">请求</th><th class="num">费用</th></tr></thead>
           <tbody>
-            <tr><td>笔记本</td><td class="num">1284</td><td class="num">$61.20</td></tr>
-            <tr><td>CI</td><td class="num">532</td><td class="num">$25.22</td></tr>
+            <tr><td>笔记本</td><td>${keyStateTag('active')}</td><td class="num">1284</td><td class="num">$61.20</td></tr>
+            <tr><td>CI</td><td>${keyStateTag('active')}</td><td class="num">532</td><td class="num">$25.22</td></tr>
+            <tr><td>旧手机</td><td>${keyStateTag('revoked')}</td><td class="num">88</td><td class="num">$0.00</td></tr>
           </tbody></table></div>
         </div>
       </div>`;
@@ -635,38 +782,112 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
       <div class="terminal-page-head">
         <div class="terminal-page-heading">
           <h1 class="terminal-title">API 密钥</h1>
-          <p class="terminal-subtitle">${active} / 5 个可用 · 演示数据</p>
+          <p class="terminal-subtitle">${active} / 5 个可用 · 创建后明文只展示一次</p>
         </div>
-        <div class="terminal-page-actions"><button class="btn btn-primary" id="open-create" type="button">+ 创建密钥</button></div>
+        <div class="terminal-page-actions"><button class="btn btn-primary" id="open-create" type="button" ${active>=5?'disabled':''}>+ 创建密钥</button></div>
       </div>
+      <div class="omc-notice is-warning">密钥明文仅在创建成功弹窗中出现一次，关闭后无法再查看，请立即复制保存。</div>
       <div class="data-table"><table>
-        <thead><tr><th>名称</th><th>密钥</th><th>状态</th><th class="num">请求</th><th>最近使用</th><th></th></tr></thead>
+        <thead><tr><th>名称</th><th>密钥</th><th>状态</th><th class="num">请求</th><th>最近使用</th><th>创建时间</th><th></th></tr></thead>
         <tbody>${portalKeys.map(k => `
           <tr>
-            <td>${k.name}</td><td class="mono">${k.prefix}…${k.last4}</td>
-            <td>${k.state==='active'?'<span class="tag is-success is-small">可用</span>':'<span class="tag is-small">已撤销</span>'}</td>
-            <td class="num">${fmt(k.requests)}</td><td>${k.last_used}</td>
-            <td>${k.state==='active'?`<button class="btn btn-danger btn-sm" data-revoke="${k.id}" type="button">撤销</button>`:''}</td>
+            <td>${k.name}</td>
+            <td class="mono">${k.prefix}…${k.last4}</td>
+            <td>${keyStateTag(k.state)}</td>
+            <td class="num">${fmt(k.requests)}</td>
+            <td>${k.last_used}</td>
+            <td>${k.created}</td>
+            <td>${k.state==='active'?`<button class="btn btn-danger btn-sm" data-revoke="${k.id}" type="button">撤销</button>`:'<span class="tag is-small">不可用</span>'}</td>
           </tr>`).join('')}</tbody>
       </table></div>
-      <p class="footer-note">真实环境会同步进 CPA；本页为静态演示。</p>`;
+      <p class="footer-note">真实环境会同步进 CPA access.api-keys；本页为静态演示。</p>`;
   }
 
   function pagePortalUsage() {
+    const keys = [...new Set(portalEvents.map(e => e.key))];
+    const models = [...new Set(portalEvents.map(e => e.model))];
+    let rows = portalEvents.slice();
+    if (usageFilter.key) rows = rows.filter(e => e.key === usageFilter.key);
+    if (usageFilter.model) rows = rows.filter(e => e.model === usageFilter.model);
+    if (usageFilter.result === 'ok') rows = rows.filter(e => e.ok);
+    if (usageFilter.result === 'fail') rows = rows.filter(e => !e.ok);
     return `
       <div class="terminal-page-head"><div class="terminal-page-heading">
         <h1 class="terminal-title">使用记录</h1>
-        <p class="terminal-subtitle">你的每一次请求 · 演示数据</p>
+        <p class="terminal-subtitle">按密钥 / 模型 / 成败筛选 · 点击行查看延迟与错误</p>
       </div></div>
+      <div class="filters">
+        <div class="field"><label>密钥</label>
+          <select id="flt-key"><option value="">全部</option>${keys.map(k=>`<option value="${k}" ${usageFilter.key===k?'selected':''}>${k}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>模型</label>
+          <select id="flt-model"><option value="">全部</option>${models.map(m=>`<option value="${m}" ${usageFilter.model===m?'selected':''}>${m}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>结果</label>
+          <select id="flt-result">
+            <option value="" ${!usageFilter.result?'selected':''}>全部</option>
+            <option value="ok" ${usageFilter.result==='ok'?'selected':''}>成功</option>
+            <option value="fail" ${usageFilter.result==='fail'?'selected':''}>失败</option>
+          </select>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="flt-reset" type="button">重置</button>
+      </div>
       <div class="data-table"><table>
         <thead><tr><th>时间</th><th>密钥</th><th>模型</th><th>结果</th><th class="num">输入</th><th class="num">输出</th><th class="num">费用</th></tr></thead>
-        <tbody>${portalEvents.map(e => `
-          <tr>
+        <tbody>${rows.length ? rows.map(e => `
+          <tr class="clickable${usageDetailId===e.id?' open':''}" data-usage-row="${e.id}">
             <td>${e.time}</td><td>${e.key}</td><td class="mono">${e.model}</td>
-            <td>${String(e.result).startsWith('失败')?'<span class="tag is-danger is-small">'+e.result+'</span>':'<span class="tag is-success is-small">'+e.result+'</span>'}</td>
+            <td>${e.ok?'<span class="tag is-success is-small">'+e.result+'</span>':'<span class="tag is-danger is-small">'+e.result+'</span>'}</td>
             <td class="num">${fmt(e.input)}</td><td class="num">${fmt(e.output)}</td><td class="num">${fmtUSD(e.cost)}</td>
-          </tr>`).join('')}</tbody>
+          </tr>
+          ${usageDetailId===e.id ? `
+          <tr class="row-detail"><td colspan="7"><div class="row-detail-inner">
+            <div><dt>延迟</dt><dd>${(e.latency_ms/1000).toFixed(2)}s（${fmt(e.latency_ms)} ms）</dd></div>
+            <div><dt>HTTP / 状态</dt><dd>${e.result}${e.ok?' · 成功':' · 失败'}</dd></div>
+            <div><dt>Token</dt><dd>输入 ${fmt(e.input)} · 输出 ${fmt(e.output)}</dd></div>
+            <div><dt>费用</dt><dd>${fmtUSD(e.cost)}</dd></div>
+            <div style="grid-column:1/-1"><dt>错误信息</dt><dd>${e.error ? `<span class="mono" style="color:var(--danger)">${e.error}</span>` : '<span style="color:var(--muted)">—</span>'}</dd></div>
+          </div></td></tr>` : ''}
+        `).join('') : `<tr><td colspan="7" style="color:var(--muted);text-align:center">没有匹配的记录</td></tr>`}</tbody>
       </table></div>`;
+  }
+
+  function pagePortalWallet() {
+    return `
+      <div class="terminal-page-head"><div class="terminal-page-heading">
+        <h1 class="terminal-title">钱包</h1>
+        <p class="terminal-subtitle">余额 · 兑换码 · 流水 · 全部为演示数据</p>
+      </div></div>
+      <div class="grid-two">
+        <div class="panel">
+          <div class="panel-title">当前余额</div>
+          <div class="wallet-balance"><span class="amt">${fmtUSD(walletBalance)}</span><span class="unit">USD · 演示</span></div>
+          <p class="footer-note">用量成功后从余额扣减；余额不足时上游请求会被拒绝（产品行为示意）。</p>
+        </div>
+        <div class="panel">
+          <div class="panel-title">兑换码充值</div>
+          <div class="redeem-row">
+            <div class="field"><label>兑换码</label><input id="redeem-code" placeholder="例如 OMC-DEMO-100" autocomplete="off" /></div>
+            <button class="btn btn-primary" id="do-redeem" type="button">兑换</button>
+          </div>
+          ${redeemMsg ? `<div class="omc-notice" style="margin-top:12px">${redeemMsg}</div>` : `<p class="footer-note">试用码：<code class="mono">OMC-DEMO-100</code>、<code class="mono">TRY-ME-50</code>、<code class="mono">WELCOME-20</code></p>`}
+        </div>
+      </div>
+      <div class="panel" style="padding:0;overflow:hidden">
+        <div class="panel-title" style="padding:16px 20px 0">流水</div>
+        <div class="data-table" style="border:0;border-radius:0">
+          <table>
+            <thead><tr><th>时间</th><th>类型</th><th>说明</th><th class="num">变动</th><th class="num">余额</th></tr></thead>
+            <tbody>${walletLedger.map(r => {
+              const typeTag = r.type==='redeem' ? '<span class="tag is-accent is-small">兑换</span>'
+                : r.type==='grant' ? '<span class="tag is-success is-small">赠送</span>'
+                : '<span class="tag is-small">用量</span>';
+              const amt = r.amount >= 0 ? `<span style="color:var(--success)">+${fmtUSD(r.amount)}</span>` : `<span style="color:var(--danger)">${fmtUSD(r.amount)}</span>`;
+              return `<tr><td>${r.time}</td><td>${typeTag}</td><td>${r.label}</td><td class="num">${amt}</td><td class="num">${fmtUSD(r.balance)}</td></tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+      </div>`;
   }
 
   function pagePortalAccount(auth) {
@@ -680,6 +901,7 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
           <dl class="fact-list">
             <div class="fact-list-row"><dt>用户名</dt><dd class="mono">${auth.username}</dd></div>
             <div class="fact-list-row"><dt>显示名称</dt><dd>${auth.display_name || '—'}</dd></div>
+            <div class="fact-list-row"><dt>钱包余额</dt><dd><a href="#/portal/wallet">${fmtUSD(walletBalance)}</a></dd></div>
           </dl>
         </div>
         <div class="panel"><div class="panel-title">修改密码</div>
@@ -691,16 +913,54 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
   }
 
   function renderCreateModal() {
-    return `<div class="modal-backdrop"><div class="modal"><h3>创建密钥</h3><p>完整密钥只展示一次。</p>
-      <div class="field"><label>名称</label><input id="new-key-name" value="演示密钥" /></div>
-      <div class="modal-actions"><button class="btn btn-ghost" id="cancel-create" type="button">取消</button>
-      <button class="btn btn-primary" id="confirm-create" type="button">创建</button></div></div></div>`;
+    return `<div class="modal-backdrop" data-backdrop="create"><div class="modal" role="dialog" aria-modal="true">
+      <h3>创建密钥</h3>
+      <p>创建成功后会弹出<strong>一次性明文</strong>，请立即复制；关闭后无法再查看。</p>
+      <div class="field"><label>名称</label><input id="new-key-name" value="演示密钥" maxlength="40" /></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancel-create" type="button">取消</button>
+        <button class="btn btn-primary" id="confirm-create" type="button">创建</button>
+      </div>
+    </div></div>`;
   }
+
   function renderIssuedModal() {
-    return `<div class="modal-backdrop"><div class="modal"><h3>密钥已创建</h3>
-      <p>请立即复制保存。<strong>（演示值）</strong></p>
-      <div class="secret"><span>${issuedSecret}</span><button class="btn btn-ghost btn-sm" id="copy-secret" type="button">复制</button></div>
-      <div class="modal-actions"><button class="btn btn-primary" id="close-issued" type="button">我已保存</button></div></div></div>`;
+    return `<div class="modal-backdrop" data-backdrop="issued"><div class="modal wide" role="dialog" aria-modal="true">
+      <h3>密钥已创建</h3>
+      <p>这是<strong>唯一</strong>一次展示明文。复制后请妥善保存。（演示值）</p>
+      <div class="secret warn-once"><span id="issued-text">${issuedSecret}</span>
+        <button class="btn btn-primary btn-sm" id="copy-secret" type="button">复制</button>
+      </div>
+      <div class="modal-actions"><button class="btn btn-primary" id="close-issued" type="button">我已保存</button></div>
+    </div></div>`;
+  }
+
+  function renderRevokeModal() {
+    const k = revokeTarget;
+    return `<div class="modal-backdrop" data-backdrop="revoke"><div class="modal" role="dialog" aria-modal="true">
+      <h3>撤销密钥</h3>
+      <p>确认撤销「<strong>${k.name}</strong>」（<span class="mono">${k.prefix}…${k.last4}</span>）？撤销后立即失效，不可恢复。</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancel-revoke" type="button">取消</button>
+        <button class="btn btn-danger" id="confirm-revoke" type="button">确认撤销</button>
+      </div>
+    </div></div>`;
+  }
+
+  function showToast(msg) {
+    toastMsg = msg;
+    render();
+    setTimeout(() => { if (toastMsg === msg) { toastMsg = ''; render(); } }, 1800);
+  }
+
+  function copyText(str) {
+    return navigator.clipboard.writeText(str).then(() => true).catch(() => {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = str; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); ta.remove(); return true;
+      } catch { return false; }
+    });
   }
 
   function bindShell(auth) {
@@ -708,29 +968,106 @@ html[data-theme-mode=light] .wordmark-light { display:inline; }
       mobileNavOpen = false; navigate(btn.getAttribute('data-nav'));
     }));
     document.getElementById('brand-home')?.addEventListener('click', () => { mobileNavOpen = false; navigate(homePath(auth)); });
-    document.getElementById('sign-out')?.addEventListener('click', () => { saveAuth(null); issuedSecret=null; createOpen=false; mobileNavOpen=false; navigate('/login'); });
-    document.getElementById('toggle-collapse')?.addEventListener('click', () => { collapsed=!collapsed; localStorage.setItem(COLLAPSE_KEY, collapsed?'1':'0'); render(); });
+    document.getElementById('sign-out')?.addEventListener('click', () => {
+      saveAuth(null); issuedSecret=null; createOpen=false; revokeTarget=null; mobileNavOpen=false; navigate('/login');
+    });
+    document.getElementById('toggle-collapse')?.addEventListener('click', () => {
+      collapsed=!collapsed; localStorage.setItem(COLLAPSE_KEY, collapsed?'1':'0'); render();
+    });
     document.getElementById('open-mobile-nav')?.addEventListener('click', () => { mobileNavOpen=true; render(); });
     document.getElementById('mobile-mask')?.addEventListener('click', () => { mobileNavOpen=false; render(); });
-    document.getElementById('toggle-theme')?.addEventListener('click', () => { setTheme(themeMode()==='dark'?'light':'dark'); render(); });
+    document.getElementById('toggle-theme')?.addEventListener('click', () => {
+      setTheme(themeMode()==='dark'?'light':'dark'); render();
+    });
+
+    // Keys: create → issued → copy → revoke confirm
     document.getElementById('open-create')?.addEventListener('click', () => { createOpen=true; render(); });
     document.getElementById('cancel-create')?.addEventListener('click', () => { createOpen=false; render(); });
     document.getElementById('confirm-create')?.addEventListener('click', () => {
       const name = document.getElementById('new-key-name')?.value?.trim() || '演示密钥';
-      const rand = Math.random().toString(36).slice(2,12);
-      issuedSecret = 'sk-omc-DEMO' + rand + 'DEMO';
-      portalKeys.unshift({ id: Date.now(), name, prefix: issuedSecret.slice(0,12), last4: issuedSecret.slice(-4), state: 'active', requests: 0, last_used: '—', created: new Date().toISOString().slice(0,16).replace('T',' ') });
-      createOpen=false; render();
+      if (portalKeys.filter(k => k.state === 'active').length >= 5) {
+        showToast('已达可用密钥上限（5）'); return;
+      }
+      const rand = Math.random().toString(36).slice(2, 14);
+      issuedSecret = 'sk-omc-DEMO' + rand + 'X';
+      const now = new Date();
+      const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      portalKeys.unshift({
+        id: Date.now(), name,
+        prefix: issuedSecret.slice(0, 12), last4: issuedSecret.slice(-4),
+        state: 'active', requests: 0, last_used: '—', created: stamp,
+      });
+      createOpen = false; render();
     });
     document.getElementById('close-issued')?.addEventListener('click', () => { issuedSecret=null; render(); });
-    document.getElementById('copy-secret')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(issuedSecret); } catch {} });
+    document.getElementById('copy-secret')?.addEventListener('click', async () => {
+      const ok = await copyText(issuedSecret || '');
+      showToast(ok ? '已复制到剪贴板' : '复制失败，请手动选择');
+    });
     document.querySelectorAll('[data-revoke]').forEach(btn => btn.addEventListener('click', () => {
       const id = Number(btn.getAttribute('data-revoke'));
-      const k = portalKeys.find(x => x.id === id);
-      if (k && confirm(`撤销「${k.name}」？（演示）`)) { k.state='revoked'; render(); }
+      revokeTarget = portalKeys.find(x => x.id === id) || null;
+      render();
     }));
-    document.getElementById('fake-password')?.addEventListener('click', () => alert('静态演示，不会修改密码。'));
-    document.getElementById('fake-create-customer')?.addEventListener('click', () => alert('静态演示：真实产品里这里会打开创建客户表单。'));
+    document.getElementById('cancel-revoke')?.addEventListener('click', () => { revokeTarget=null; render(); });
+    document.getElementById('confirm-revoke')?.addEventListener('click', () => {
+      if (revokeTarget) {
+        const k = portalKeys.find(x => x.id === revokeTarget.id);
+        if (k) k.state = 'revoked';
+        showToast(`已撤销「${revokeTarget.name}」`);
+        revokeTarget = null;
+      } else render();
+    });
+
+    // Usage filters + row detail
+    const applyFlt = () => {
+      usageFilter = {
+        key: document.getElementById('flt-key')?.value || '',
+        model: document.getElementById('flt-model')?.value || '',
+        result: document.getElementById('flt-result')?.value || '',
+      };
+      usageDetailId = null;
+      render();
+    };
+    document.getElementById('flt-key')?.addEventListener('change', applyFlt);
+    document.getElementById('flt-model')?.addEventListener('change', applyFlt);
+    document.getElementById('flt-result')?.addEventListener('change', applyFlt);
+    document.getElementById('flt-reset')?.addEventListener('click', () => {
+      usageFilter = { key: '', model: '', result: '' }; usageDetailId = null; render();
+    });
+    document.querySelectorAll('[data-usage-row]').forEach(tr => tr.addEventListener('click', () => {
+      const id = Number(tr.getAttribute('data-usage-row'));
+      usageDetailId = usageDetailId === id ? null : id;
+      render();
+    }));
+
+    // Wallet redeem
+    document.getElementById('do-redeem')?.addEventListener('click', () => {
+      const raw = (document.getElementById('redeem-code')?.value || '').trim().toUpperCase();
+      if (!raw) { redeemMsg = '请输入兑换码'; render(); return; }
+      const amt = DEMO_REDEEM_CODES[raw];
+      if (!amt) { redeemMsg = `无效兑换码「${raw}」（演示）`; render(); return; }
+      walletBalance = Math.round((walletBalance + amt) * 100) / 100;
+      const now = new Date();
+      const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      walletLedger.unshift({ time: stamp, type: 'redeem', label: `兑换码 ${raw}`, amount: amt, balance: walletBalance });
+      redeemMsg = `兑换成功，到账 ${fmtUSD(amt)}`;
+      showToast(`余额 +${fmtUSD(amt)}`);
+    });
+
+    // Copy helpers (gateway howto)
+    document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', async () => {
+      const ok = await copyText(btn.getAttribute('data-copy') || '');
+      showToast(ok ? '已复制' : '复制失败');
+    }));
+    document.querySelectorAll('[data-copy-id]').forEach(btn => btn.addEventListener('click', async () => {
+      const el = document.getElementById(btn.getAttribute('data-copy-id'));
+      const ok = await copyText(el?.textContent || '');
+      showToast(ok ? '已复制' : '复制失败');
+    }));
+
+    document.getElementById('fake-password')?.addEventListener('click', () => showToast('静态演示，不会修改密码'));
+    document.getElementById('fake-create-customer')?.addEventListener('click', () => showToast('静态演示：真实产品会打开创建客户表单'));
   }
 
   window.addEventListener('hashchange', render);
