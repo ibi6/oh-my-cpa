@@ -46,6 +46,8 @@ type Config struct {
 	// would touch real secret material. It is off unless OMCPA_DEMO_MODE is set,
 	// which is what keeps the self-hosted default byte-for-byte unchanged.
 	IsDemoMode bool
+	// Portal is the customer portal (ADR 0105); see portal.go.
+	Portal PortalConfig
 }
 
 // DefaultUpdaterURL is the updater sidecar's address: the name both an installed
@@ -265,6 +267,14 @@ func Load() (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
+	portalConfig, err := loadPortalConfig()
+	if err != nil {
+		return Config{}, err
+	}
+	if demoMode {
+		// The demonstration has no real gateway to hand customer keys to.
+		portalConfig.Enabled = false
+	}
 	if demoMode {
 		// The fixture database is the whole history, and there is no CPA queue to
 		// drain: leaving capture on would only poll an upstream that does not
@@ -311,6 +321,7 @@ func Load() (Config, error) {
 		GoogleFontsURL:    strings.TrimSpace(os.Getenv("OMCPA_GOOGLE_FONTS_URL")),
 		CPA:               cpa,
 		IsDemoMode:        demoMode,
+		Portal:            portalConfig,
 	}, nil
 }
 

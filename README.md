@@ -23,6 +23,7 @@ MCP · Visualization · Management
 <br />
 
 **[Live Demo](https://omc-demo.junze.dev)** ·
+**[Full-native dual-role demo (static UI)](https://ibi6.github.io/oh-my-cpa/portal-demo/?v=customer-rich)** ·
 [Install](#install) ·
 [Features](#features) ·
 [Agents and MCP](#agents-and-mcp) ·
@@ -46,6 +47,8 @@ signs in with CPA's management key.
 
 > [!TIP]
 > **[Try the Live Demo](https://omc-demo.junze.dev)**
+
+> This fork also hosts a [full-native dual-role static demo](https://ibi6.github.io/oh-my-cpa/portal-demo/?v=customer-rich): admins get the native console shell (including Customers); the customer portal adds trend charts, one-time key plaintext, usage filters, gateway howto, and a demo wallet. Sample data only — it does **not** talk to a real CPA or sync keys.
 
 ## Screenshots
 
@@ -441,6 +444,7 @@ trusted agents and serve the console over HTTPS before connecting one remotely.
 | `OMCPA_PUBLIC_URL` | unset | The address browsers use; `https://` marks the session cookie `Secure` |
 | `OMCPA_USAGE_INGEST_MODE` | `auto` | `off` when another service collects this CPA's usage |
 | `TZ` | system zone | Server calendar; keep it equal to CPA's. Containers default to UTC |
+| `OMCPA_PORTAL_ENABLED` | `false` | Customer portal at `<base>/portal`: customer accounts that issue their own keys into CPA and read their own usage (ADR 0105) |
 
 The full reference, with deployment constraints and operational notes, is
 [`docs/operations.md`](docs/operations.md).

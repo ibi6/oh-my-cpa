@@ -77,6 +77,7 @@ const ROUTING_FACETS: FacetSpec[] = [
   { key: 'source', facet: 'sources', labelKey: 'events.source' },
   { key: 'api_key', facet: 'api_group_keys', labelKey: 'events.caller' },
   { key: 'executor', facet: 'executors', labelKey: 'events.executor' },
+  { key: 'portal_user', facet: 'portal_users', labelKey: 'events.portal_user' },
 ];
 
 /**
@@ -526,7 +527,11 @@ export const RequestFilterDrawer: React.FC<RequestFilterDrawerProps> = ({
       {section(
         'events.group_routing',
         <>
-          {ROUTING_FACETS.map(multiRow)}
+          {ROUTING_FACETS
+            // The customer filter is offered only where customers made requests (or one is
+            // already chosen); a deployment without the portal never sees an empty dropdown.
+            .filter((spec) => spec.key !== 'portal_user' || (facets?.portal_users?.length ?? 0) > 0 || (draft.multi.portal_user?.length ?? 0) > 0)
+            .map(multiRow)}
           {TEXT_FIELDS.map(textRow)}
           {regexRow}
         </>

@@ -98,7 +98,10 @@ type UsageEventFilter struct {
 	// AuthIndexes select credentials on the CPA instance.
 	AuthIndexes []string
 	// Sources are CPA's client-facing API key labels.
-	Sources              []string
+	Sources []string
+	// PortalUserIDs select the customer portal accounts a record is attributed
+	// to (ADR 0105); a record no portal key authenticated matches none.
+	PortalUserIDs        []string
 	AuthTypes            []string
 	ExecutorTypes        []string
 	ReasoningEfforts     []string
@@ -583,6 +586,9 @@ type UsageFacets struct {
 	ReasoningEfforts     []UsageFacetValue `json:"reasoning_efforts"`
 	ServiceTiers         []UsageFacetValue `json:"service_tiers"`
 	ResolvedServiceTiers []UsageFacetValue `json:"resolved_service_tiers"`
+	// PortalUsers are the customer portal accounts in the window (ADR 0105),
+	// filled by the API layer; the value is the `portal_user` filter's id.
+	PortalUsers []UsageFacetValue `json:"portal_users"`
 }
 
 // UsageFacetValue is one distinct value plus how often it occurred. Mask carries
@@ -845,6 +851,7 @@ func usageEventWhere(filter UsageEventFilter) ([]string, []any, error) {
 		{"e.api_group_key", filter.APIGroupKeys},
 		{"e.auth_index", filter.AuthIndexes},
 		{"e.source", filter.Sources},
+		{"e.portal_user_id", filter.PortalUserIDs},
 		{"e.auth_type", filter.AuthTypes},
 		{"e.executor_type", filter.ExecutorTypes},
 		{"e.reasoning_effort", filter.ReasoningEfforts},

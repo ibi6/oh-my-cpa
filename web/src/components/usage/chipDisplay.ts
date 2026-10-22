@@ -29,6 +29,8 @@ export interface ChipDisplayInput {
   credentialNames: ReadonlyMap<string, string | undefined>;
   /** The caller facet, which is where an alias or a display mask lives. */
   callerFacets: UsageFacets['api_group_keys'] | undefined;
+  /** The customer-account facet (ADR 0105); its alias is the username. */
+  portalUserFacets?: UsageFacets['portal_users'];
   /** Resolves a stored provider key to the operator's name for that line. */
   resolveProviderName: (value: string) => string;
   /** The dictionary's names for the two cost states. */
@@ -49,6 +51,7 @@ export function chipDisplayValue({
   value,
   credentialNames,
   callerFacets,
+  portalUserFacets,
   resolveProviderName,
   costLabels,
   servedLabels,
@@ -59,6 +62,7 @@ export function chipDisplayValue({
     // The alias wins over the mask, matching the rows and the dropdown.
     return facet?.alias?.trim() || facet?.mask?.trim() || value;
   }
+  if (key === 'portal_user') return portalUserFacets?.find((entry) => entry.value === value)?.alias?.trim() || `#${value}`;
   if (key === 'provider') return resolveProviderName(value);
   if (key === 'reasoning') return displayEffortName(value);
   if (key === 'cost') return value === 'priced' ? costLabels.priced : costLabels.unpriced;

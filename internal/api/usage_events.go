@@ -341,6 +341,7 @@ func usageEventFilterFromRequest(request *http.Request, window dashboardWindow) 
 		{"reasoning", &filter.ReasoningEfforts},
 		{"service_tier", &filter.ServiceTiers},
 		{"resolved_service_tier", &filter.ResolvedServiceTiers},
+		{"portal_user", &filter.PortalUserIDs},
 	}
 	for _, dimension := range multi {
 		values, err := usageEventMultiParams(query, dimension.key)
@@ -757,6 +758,7 @@ func (h *Handler) listUsageFacets(writer http.ResponseWriter, request *http.Requ
 		return
 	}
 	h.attachFacetAliases(request, &facets)
+	h.attachPortalUserFacet(request, window.FromMS, window.ToMS, &facets)
 	writeJSON(writer, http.StatusOK, map[string]any{"window": window, "facets": facets})
 }
 

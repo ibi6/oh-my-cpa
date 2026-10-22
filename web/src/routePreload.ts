@@ -16,6 +16,7 @@ import {
   loadPluginsPage,
   loadPluginPageHost,
   loadOmcSettingsPage,
+  loadPortalUsersPage,
 } from './routePages';
 
 const ROUTE_LOADERS: Record<string, () => Promise<unknown>> = {
@@ -36,6 +37,7 @@ const ROUTE_LOADERS: Record<string, () => Promise<unknown>> = {
   '/plugins': loadPluginsPage,
   '/plugins/store': loadPluginsPage,
   '/omc-settings': loadOmcSettingsPage,
+  '/portal-users': loadPortalUsersPage,
 };
 
 export function preloadRoute(path: string): void {

@@ -36,6 +36,7 @@ import (
 
 type Handler struct {
 	agent           agentState
+	portalState     portalState
 	browserRuns     browserRuns
 	playgroundSlots chan struct{}
 	cfg             config.Config
@@ -207,6 +208,7 @@ func (h *Handler) routes() chi.Router {
 			apiRouter.Post("/mcp", h.serveMCP)
 			apiRouter.Get("/mcp", h.serveMCP)
 			apiRouter.Delete("/mcp", h.serveMCP)
+			h.mountPortalRoutes(apiRouter)
 			apiRouter.Route("/v1", func(v1 chi.Router) {
 				v1.Use(h.requireConsoleOrCapability)
 				v1.Get("/capabilities", h.listCapabilities)
@@ -370,6 +372,7 @@ func (h *Handler) routes() chi.Router {
 				v1.Get("/management/audit/events", h.listAuditEvents)
 				v1.Get("/management/audit/summary", h.summarizeAuditEvents)
 				v1.Get("/management/audit/export", h.exportAuditEvents)
+				h.mountPortalAdminRoutes(v1)
 				v1.NotFound(h.notFound)
 				v1.MethodNotAllowed(h.methodNotAllowed)
 			})

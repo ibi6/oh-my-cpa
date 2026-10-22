@@ -23,6 +23,7 @@ MCP · 可视化 · 管理
 <br />
 
 **[Live Demo](https://omc-demo.junze.dev)** ·
+**[全原生双角色演示（静态 UI）](https://ibi6.github.io/oh-my-cpa/portal-demo/?v=customer-rich)** ·
 [安装](#安装) ·
 [功能特性](#功能特性) ·
 [智能体与 MCP](#智能体与-mcp) ·
@@ -43,6 +44,8 @@ OMC 是单个 Go 二进制文件，内嵌 React 控制台，数据存放在本�
 
 > [!TIP]
 > **[立即体验 Live Demo](https://omc-demo.junze.dev)**
+
+> 本 fork 另提供 [全原生双角色静态演示](https://ibi6.github.io/oh-my-cpa/portal-demo/?v=customer-rich)：管理员进原生控制台壳（含客户账户）；客户门户含趋势图、密钥一次性明文、用量筛选、网关接入说明与演示钱包。页面使用演示数据，**不会**连接真实 CPA 或同步密钥。
 
 ## 界面截图
 
@@ -408,6 +411,7 @@ bearer_token_env_var = "OMCPA_CPA_MANAGEMENT_KEY"
 | `OMCPA_PUBLIC_URL` | 未设置 | 浏览器访问的地址；为 `https://` 时会话 Cookie 带 `Secure` 标记 |
 | `OMCPA_USAGE_INGEST_MODE` | `auto` | 已有其他服务采集该 CPA 的用量时设为 `off` |
 | `TZ` | 系统时区 | 服务器日历，需与 CPA 一致；容器内默认为 UTC |
+| `OMCPA_PORTAL_ENABLED` | `false` | 客户中心（`<base>/portal`）：客户账户自助创建写入 CPA 的密钥并查看自己的用量（ADR 0105） |
 
 完整的配置参考、部署约束与运维须知见 [`docs/operations.md`](docs/operations.md)。
 

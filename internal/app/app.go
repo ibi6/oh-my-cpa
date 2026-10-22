@@ -446,6 +446,16 @@ func (a *App) Run(ctx context.Context) error {
 		}()
 	}
 	defer func() { stop(); <-warmupDone }()
+	// The customer portal's key reconciler (ADR 0105) returns at once when the
+	// portal is disabled; it is joined like the warmup loop.
+	portalSyncDone := make(chan struct{})
+	go func() {
+		defer close(portalSyncDone)
+		if err := a.handler.RunPortalSync(runCtx); err != nil && !errors.Is(err, context.Canceled) {
+			a.logger.Warn("portal key sync loop stopped", "error", err)
+		}
+	}()
+	defer func() { stop(); <-portalSyncDone }()
 	quotaRefreshDone := make(chan struct{})
 	if a.cfg.IsDemoMode {
 		close(quotaRefreshDone)

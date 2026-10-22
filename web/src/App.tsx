@@ -40,6 +40,7 @@ import {
   PluginsPage,
   PluginPageHost,
   OmcSettingsPage,
+  PortalUsersPage,
 } from './routePages';
 import { ThemeProvider, ThemeServerSync, useTheme } from './theme/ThemeContext';
 import { I18nProvider, useI18n } from './i18n';
@@ -47,8 +48,13 @@ import { TokenDisplayProvider } from './types/tokenDisplayContext';
 import { useScrollSmoothing } from './hooks/useScrollSmoothing';
 import { useConsoleFonts } from './hooks/useFonts';
 
+import { isPortalPath } from './portal/paths';
+
 // The recovery boundary stays eager even when the authenticated shell cannot be downloaded.
 const AppLayout = React.lazy(() => import('./components/common/AppLayout').then(module => ({ default: module.AppLayout })));
+// The customer portal (ADR 0105) is a separate application under <base>/portal with its own
+// session; it is downloaded only there and never mounts the operator's AuthGate.
+const PortalApp = React.lazy(() => import('./portal/PortalApp').then(module => ({ default: module.PortalApp })));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -113,6 +119,10 @@ const ThemedShell: React.FC = () => {
   const { lang } = useI18n();
   const { theme } = useTheme();
   const antdTheme = React.useMemo(() => createThemeConfig(theme), [theme]);
+  // Decided once per document: the portal and the console are different applications, and moving
+  // between them is a full navigation. The portal has no operator session, so it neither syncs
+  // the operator's stored theme nor reads the operator's font library.
+  const isPortal = React.useMemo(() => isPortalPath(window.location.pathname), []);
   return (
     <ConfigProvider
       locale={ANTD_LOCALES[lang]}
@@ -127,12 +137,12 @@ const ThemedShell: React.FC = () => {
       button={BUTTON_CONFIG}
     >
       <AntdApp notification={TOAST_CONFIG}>
-        <ThemeServerSync />
+        {!isPortal && <ThemeServerSync />}
         <ScrollSmoothingSync />
-        <FontSync />
+        {!isPortal && <FontSync />}
         <DemoNotice />
         <TokenDisplayProvider>
-          <AppRoutes />
+          {isPortal ? <React.Suspense fallback={<ShellLoading />}><PortalApp /></React.Suspense> : <AppRoutes />}
         </TokenDisplayProvider>
       </AntdApp>
     </ConfigProvider>
@@ -158,6 +168,7 @@ const AppRoutes: React.FC = () => {
         { path: 'model-square', element: <ModelSquarePage /> },
         { path: 'ai-providers', element: <ProvidersPage /> },
         { path: 'api-keys', element: <ApiKeysPage /> },
+        { path: 'portal-users', element: <PortalUsersPage /> },
         { path: 'oauth-management', element: <OAuthManagementPage /> },
         { path: 'auth-files', element: <LegacyOAuthManagementRedirect from="/auth-files" /> },
         { path: 'oauth', element: <LegacyOAuthManagementRedirect from="/oauth" /> },

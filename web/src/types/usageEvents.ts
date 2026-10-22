@@ -174,6 +174,11 @@ export interface UsageFacets {
   reasoning_efforts: UsageFacetValue[];
   service_tiers: UsageFacetValue[];
   resolved_service_tiers: UsageFacetValue[];
+  /** Customer portal accounts in the window (ADR 0105): `value` is the account
+   *  id the `portal_user` filter takes, `alias` its username. Optional, and not in
+   *  USAGE_FACET_KEYS, because a server or a demo export without the portal does
+   *  not send it, and its absence only means "no customers". */
+  portal_users?: UsageFacetValue[];
 }
 
 export const USAGE_FACET_KEYS = [
@@ -293,6 +298,7 @@ export const USAGE_MULTI_FILTER_KEYS = [
   'reasoning',
   'service_tier',
   'resolved_service_tier',
+  'portal_user',
 ] as const;
 export type UsageMultiFilterKey = (typeof USAGE_MULTI_FILTER_KEYS)[number];
 

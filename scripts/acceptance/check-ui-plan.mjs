@@ -104,6 +104,10 @@ const SCENARIO_PATHS = [
       'mobile-console',
     ],
   },
+  // The customer-account console (ADR 0105) and the customer portal it shares parts with: no
+  // probe loads either yet, and the demonstration refuses every portal route.
+  { prefix: 'web/src/pages/portal/', scenarios: [] },
+  { prefix: 'web/src/portal/', scenarios: [] },
   {
     prefix: 'web/src/pages/UsageEventsPage',
     scenarios: [
