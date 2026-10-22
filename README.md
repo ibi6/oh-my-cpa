@@ -23,7 +23,7 @@ MCP · Visualization · Management
 <br />
 
 **[Live Demo](https://omc-demo.junze.dev)** ·
-**[Customer portal demo (static UI)](https://ibi6.github.io/oh-my-cpa/portal-demo/)** ·
+**[Full-native dual-role demo (static UI)](https://ibi6.github.io/oh-my-cpa/portal-demo/?v=native-dual)** ·
 [Install](#install) ·
 [Features](#features) ·
 [Agents and MCP](#agents-and-mcp) ·
@@ -48,7 +48,7 @@ signs in with CPA's management key.
 > [!TIP]
 > **[Try the Live Demo](https://omc-demo.junze.dev)**
 
-> This fork also hosts a [static customer-portal demo](https://ibi6.github.io/oh-my-cpa/portal-demo/) (sign-in, overview, keys, usage, account). It uses sample data and does **not** talk to a real CPA or sync keys.
+> This fork also hosts a [full-native dual-role static demo](https://ibi6.github.io/oh-my-cpa/portal-demo/?v=native-dual): admins enter the native console shell (including Customers); customers only see portal pages. Sample data only — it does **not** talk to a real CPA or sync keys.
 
 ## Screenshots
 
