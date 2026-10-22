@@ -1,6 +1,6 @@
 # 客户门户静态演示（GitHub Pages）
 
-这是 Oh My CPA **P1 客户门户**的静态 UI 演示，托管在 GitHub Pages 上，方便在浏览器里点开预览。
+这是 Oh My CPA **P1 客户门户**的静态 UI 演示（左侧栏布局对齐原生控制台 AppLayout），托管在 GitHub Pages 上，方便在浏览器里点开预览。
 
 - **不是**真实 Oh My CPA / CPA 后端
 - 页面里的用量、密钥、费用都是 **演示数据**
