@@ -1,683 +1,736 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme-mode="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Oh My CPA · 客户门户演示</title>
-<meta name="description" content="Oh My CPA P1 客户门户静态演示（侧边栏布局，演示数据，无真实后端）" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234f46e5'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='white' font-size='14' font-family='system-ui'%3Eo%3C/text%3E%3C/svg%3E" />
+<title>Oh My CPA · 原生控制台 / 客户门户演示</title>
+<meta name="description" content="全原生视觉的 Oh My CPA 双角色静态演示：管理员控制台 + 客户门户" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2300a2fb'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='white' font-size='14' font-family='system-ui'%3Eo%3C/text%3E%3C/svg%3E" />
 <style>
-  :root {
-    --canvas: #eceef2;
-    --bg: #ffffff;
-    --elevated: #ffffff;
-    --bg-surface: #f3f4f6;
-    --fg: #111827;
-    --fg-2: #374151;
-    --muted: #6b7280;
-    --meta: #9ca3af;
-    --border: #e5e7eb;
-    --accent: #4f46e5;
-    --accent-on: #ffffff;
-    --success: #059669;
-    --success-bg: #ecfdf5;
-    --warn: #d97706;
-    --warn-bg: #fffbeb;
-    --danger: #dc2626;
-    --danger-bg: #fef2f2;
-    --neutral-bg: #f3f4f6;
-    --radius-md: 8px;
-    --radius-lg: 14px;
-    --radius-sm: 8px;
-    --shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.04);
-    --font: "Inter", "PingFang SC", "Noto Sans SC", "Segoe UI", system-ui, sans-serif;
-    --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
-    --sider-w: 236px;
-    --header-h: 56px;
-    --motion-fast: 120ms;
-    --ease: cubic-bezier(0.2, 0, 0, 1);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --canvas: #0b0d12;
-      --bg: #141821;
-      --elevated: #1a1f2b;
-      --bg-surface: #1f2533;
-      --fg: #e5e7eb;
-      --fg-2: #c7CDD8;
-      --muted: #9ca3af;
-      --meta: #6b7280;
-      --border: #2a3140;
-      --accent: #818cf8;
-      --accent-on: #0b0d12;
-      --success: #34d399;
-      --success-bg: #064e3b;
-      --warn: #fbbf24;
-      --warn-bg: #451a03;
-      --danger: #f87171;
-      --danger-bg: #450a0a;
-      --neutral-bg: #1f2533;
-      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
-    }
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; height: 100%; }
-  body {
-    font-family: var(--font);
-    background: var(--canvas);
-    color: var(--fg);
-    line-height: 1.5;
-    overflow: hidden;
-  }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  button, input { font: inherit; }
+:root {
+  --font-ui: "IBM Plex Mono", "Sarasa Mono SC", "更纱黑体 SC", "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-mono: var(--font-ui);
+  font-family: var(--font-ui); line-height: 1.5; font-weight: 400; color-scheme: dark;
+  --bg:#121214; --surface:#1c1c1f; --bg-surface:var(--surface); --canvas:#09090a; --elevated:#222226;
+  --selected-inset:#2e2e37; --fg:#f4f4f6; --fg-2:#a1a1aa; --muted:#71717a; --meta:#52525b;
+  --border:#2c2c30; --border-soft:#212124; --accent:#00a2fb; --accent-hover:#0579bd; --accent-active:#025e94;
+  --accent-on:#fff; --success:#10b981; --warn:#f59e0b; --danger:#ef4444;
+  --text-2xs:10px; --text-xs:11px; --text-sm:12px; --text-md:13px; --text-base:14px; --text-lg:16px; --text-xl:20px;
+  --radius-sm:6px; --radius-md:8px; --radius-lg:12px; --radius-control:6px;
+  --shadow-float:0 12px 32px -8px rgb(0 0 0 / .55), 0 2px 8px rgb(0 0 0 / .3);
+  --shadow-overlay:0 28px 64px -16px rgb(0 0 0 / .7), 0 4px 16px rgb(0 0 0 / .35);
+  --overlay-mask:rgb(0 0 0 / .5); --hover-inset:var(--bg); --hover:#272729;
+  --app-header-height:52px; --motion-fast:120ms; --ease-standard:cubic-bezier(.2,0,0,1); --sider-w:236px;
+  background:var(--bg); color:var(--fg);
+}
+:root[data-theme-mode=light] {
+  color-scheme:light; --bg:#fff; --surface:#f1f1f3; --canvas:#f5f5f5; --elevated:#fff; --selected-inset:#eaedef;
+  --fg:#1c1c1e; --fg-2:#505055; --muted:#787880; --meta:#98989f; --accent:#005d8f; --accent-hover:#004a73;
+  --accent-active:#023b5d; --accent-on:#fff; --border:#dcdce1; --border-soft:#ebebee; --hover-inset:#f2f2f2;
+  --hover:#f3f3f3; --success:#059669; --warn:#b45309; --danger:#dc2626;
+  --shadow-float:0 12px 32px -8px rgb(20 20 30 / .14), 0 2px 8px rgb(20 20 30 / .05);
+  --shadow-overlay:0 28px 64px -16px rgb(20 20 30 / .22), 0 4px 16px rgb(20 20 30 / .06);
+  --overlay-mask:rgb(20 20 30 / .12);
+}
+* { box-sizing:border-box; scrollbar-width:thin; scrollbar-color:color-mix(in srgb,var(--fg) 18%,transparent) transparent; }
+html,body { margin:0; height:100%; }
+body { overflow:hidden; -webkit-font-smoothing:antialiased; background:var(--canvas); color:var(--fg); }
+button,input,select { font:inherit; color:inherit; }
+a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+:focus-visible:not(input):not(textarea) { outline:none; box-shadow:0 0 0 2px var(--accent)!important; border-radius:var(--radius-sm); }
 
-  .banner {
-    position: relative; z-index: 40;
-    background: linear-gradient(90deg, #4f46e5, #7c3aed);
-    color: #fff; padding: 10px 16px; text-align: center; font-size: 14px;
-  }
-  .banner strong { font-weight: 700; }
-  .banner a { color: #fff; text-decoration: underline; }
+.banner { z-index:40; position:relative; background:color-mix(in srgb,var(--warn) 16%,var(--bg)); color:var(--fg);
+  border-bottom:1px solid color-mix(in srgb,var(--warn) 28%,transparent); padding:8px 16px; text-align:center; font-size:var(--text-sm); }
+.banner strong { color:var(--warn); font-weight:600; }
 
-  /* ── Auth (no sidebar) ── */
-  .auth-shell { height: calc(100vh - 42px); height: calc(100dvh - 42px); display: flex; flex-direction: column; overflow: auto; }
-  .auth-main { flex: 1; display: grid; place-items: center; padding: 24px; }
-  .auth-card {
-    width: 100%; max-width: 400px; background: var(--bg);
-    border: 1px solid var(--border); border-radius: var(--radius-lg);
-    box-shadow: var(--shadow); padding: 28px 28px 20px;
-  }
-  .auth-brand { display: flex; justify-content: center; margin-bottom: 16px; }
-  .auth-brand img { height: 28px; }
-  .auth-title { margin: 0 0 8px; font-size: 22px; text-align: center; }
-  .auth-sub { margin: 0 0 20px; color: var(--muted); text-align: center; font-size: 14px; }
-  .field { margin-bottom: 14px; }
-  .field label { display: block; font-size: 13px; margin-bottom: 6px; color: var(--muted); }
-  .field input {
-    width: 100%; padding: 10px 12px; border-radius: var(--radius-sm);
-    border: 1px solid var(--border); background: var(--bg-surface); color: var(--fg);
-  }
-  .field input:focus { outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent); border-color: var(--accent); }
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    border: 1px solid transparent; border-radius: var(--radius-sm);
-    padding: 9px 14px; cursor: pointer; font-weight: 560;
-    background: var(--bg-surface); color: var(--fg);
-  }
-  .btn-primary { background: var(--accent); color: var(--accent-on); }
-  .btn-ghost { background: transparent; border-color: var(--border); }
-  .btn-danger { background: var(--danger-bg); color: var(--danger); }
-  .btn-text { background: transparent; border: none; color: var(--fg-2); padding: 8px; }
-  .btn-block { width: 100%; }
-  .hint { font-size: 13px; color: var(--muted); text-align: center; margin-top: 12px; }
-  .error {
-    background: var(--danger-bg); color: var(--danger);
-    border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 12px; font-size: 14px;
-  }
+.auth-shell { height:calc(100vh - 37px); height:calc(100dvh - 37px); display:grid; grid-template-rows:56px 1fr; background:var(--bg); overflow:hidden; }
+.auth-header { height:56px; display:flex; align-items:center; justify-content:flex-end; gap:6px; padding:0 24px; }
+.auth-main { min-height:0; overflow:auto; display:flex; padding:24px 16px 80px; }
+.auth-card { width:100%; max-width:360px; margin:auto; }
+.auth-brand { display:flex; justify-content:center; margin-bottom:28px; }
+.auth-brand img { height:28px; }
+.auth-title { margin:0 0 8px; text-align:center; font-size:var(--text-xl); font-weight:700; }
+.auth-sub { margin:0 0 24px; text-align:center; color:var(--muted); font-size:var(--text-md); }
+.role-picks { display:grid; gap:8px; margin-bottom:20px; }
+.role-pick { display:flex; gap:12px; align-items:flex-start; text-align:left; width:100%; padding:12px 14px;
+  border:1px solid var(--border); border-radius:var(--radius-md); background:transparent; cursor:pointer; }
+.role-pick:hover { background:color-mix(in srgb,var(--fg) 5%,transparent); }
+.role-pick.active { border-color:var(--accent); background:color-mix(in srgb,var(--accent) 8%,transparent); }
+.role-pick b { display:block; font-weight:600; font-size:var(--text-base); }
+.role-pick span { display:block; color:var(--muted); font-size:var(--text-sm); margin-top:2px; }
+.field { margin-bottom:20px; }
+.field label { display:block; font-size:var(--text-sm); color:var(--fg-2); margin-bottom:8px; }
+.field input { width:100%; height:36px; padding:0 11px; border:1px solid var(--border); border-radius:var(--radius-control); background:var(--bg); }
+.field input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 25%,transparent); }
+.hint { margin-top:16px; text-align:center; color:var(--muted); font-size:var(--text-sm); }
+.error { margin-bottom:16px; padding:10px 14px; border-radius:var(--radius-md); background:color-mix(in srgb,var(--danger) 8%,var(--bg));
+  border:1px solid color-mix(in srgb,var(--danger) 16%,transparent); font-size:var(--text-md); }
 
-  /* ── App shell with left sidebar (matches AppLayout) ── */
-  .app-shell {
-    height: calc(100vh - 42px); height: calc(100dvh - 42px);
-    display: flex; overflow: hidden; background: var(--canvas);
-  }
-  .app-sider {
-    width: var(--sider-w); flex: none;
-    display: flex; flex-direction: column;
-    height: 100%; overflow: hidden;
-    background: var(--canvas);
-  }
-  .app-brand {
-    display: flex; align-items: center; gap: 8px;
-    min-height: 60px; height: 60px; padding: 0 20px; cursor: pointer; flex: none;
-  }
-  .app-brand img { height: 20px; display: block; }
-  .app-brand .suffix { font-size: 12px; color: var(--muted); font-weight: 500; }
-  .app-sider-scroll { flex: 1 1 0; min-height: 0; overflow: auto; padding: 0 10px 12px; }
-  .nav-group-title {
-    color: var(--meta); font-size: 12px; font-weight: 500;
-    padding: 16px 10px 4px;
-  }
-  .nav-group:first-child .nav-group-title { padding-top: 4px; }
-  .nav-item {
-    display: flex; align-items: center; gap: 12px;
-    width: 100%; margin: 1px 0; padding: 0 10px; height: 36px;
-    border: none; border-radius: var(--radius-md);
-    background: transparent; color: var(--fg-2);
-    cursor: pointer; text-align: left; font-size: 14px; font-weight: 450;
-    transition: background-color var(--motion-fast) var(--ease), color var(--motion-fast) var(--ease);
-  }
-  .nav-item svg { width: 16px; height: 16px; flex: none; color: var(--muted); stroke-width: 1.75; }
-  .nav-item:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 5%, transparent); }
-  .nav-item:hover svg { color: var(--fg); }
-  .nav-item.active {
-    color: var(--fg); font-weight: 500;
-    background: color-mix(in srgb, var(--fg) 8%, transparent);
-  }
-  .nav-item.active svg { color: var(--fg); }
-  .app-sider-foot {
-    flex: none; padding: 12px 14px 16px;
-    border-top: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
-    display: flex; flex-direction: column; gap: 8px;
-  }
-  .sider-user { font-size: 13px; color: var(--muted); padding: 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sider-user strong { color: var(--fg); font-weight: 560; }
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; height:32px; padding:0 12px;
+  border-radius:var(--radius-control); border:1px solid var(--border); background:transparent; color:var(--fg);
+  font-size:var(--text-base); font-weight:500; cursor:pointer;
+  transition:background-color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard); }
+.btn:hover { background:color-mix(in srgb,var(--fg) 5%,transparent); }
+.btn-primary { background:var(--accent); border-color:var(--accent); color:var(--accent-on); font-weight:600; }
+.btn-primary:hover { background:var(--accent-hover); border-color:var(--accent-hover); color:var(--accent-on); }
+.btn-ghost { background:transparent; }
+.btn-danger { border-color:transparent; background:color-mix(in srgb,var(--danger) 12%,transparent); color:var(--danger); }
+.btn-text { border:none; background:transparent; color:var(--fg-2); width:32px; height:32px; padding:0; }
+.btn-text:hover { background:color-mix(in srgb,var(--fg) 6%,transparent); color:var(--fg); }
+.btn-block { width:100%; height:36px; }
+.btn-sm { height:26px; padding:0 10px; font-size:var(--text-sm); }
 
-  .app-body {
-    flex: 1 1 0; min-width: 0; min-height: 0;
-    display: flex; flex-direction: column;
-    margin: 8px 8px 8px 0;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-  .app-header {
-    flex: none; height: var(--header-h);
-    display: flex; align-items: center; justify-content: space-between; gap: 16px;
-    padding: 0 16px 0 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  .app-header-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
-  .collapse-btn {
-    width: 32px; height: 32px; border: none; border-radius: var(--radius-sm);
-    background: transparent; color: var(--fg-2); cursor: pointer;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .collapse-btn:hover { background: color-mix(in srgb, var(--fg) 6%, transparent); }
-  .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); white-space: nowrap; min-width: 0; }
-  .breadcrumb .current { color: var(--fg); overflow: hidden; text-overflow: ellipsis; }
-  .breadcrumb .sep { opacity: 0.5; }
-  .app-content { flex: 1 1 0; min-height: 0; overflow: auto; padding: 24px; }
-  .content-inner { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+.app-shell { height:calc(100vh - 37px); height:calc(100dvh - 37px); display:flex; overflow:hidden; background:var(--canvas); }
+.app-sider { width:var(--sider-w); flex:none; display:flex; flex-direction:column; height:100%; overflow:hidden; background:var(--canvas); }
+.app-brand { display:flex; align-items:center; gap:8px; height:60px; min-height:60px; padding:0 20px; cursor:pointer; flex:none; }
+.app-brand img { height:20px; display:block; }
+.app-brand .suffix { font-size:var(--text-sm); color:var(--muted); font-weight:500; }
+.app-sider-scroll { flex:1 1 0; min-height:0; overflow:auto; padding:0 10px 12px; }
+.nav-group-title { color:var(--meta); font-size:var(--text-sm); font-weight:500; padding:16px 10px 4px; }
+.nav-group:first-child .nav-group-title { padding-top:4px; }
+.nav-item { display:flex; align-items:center; gap:12px; width:100%; margin:1px 0; padding:0 10px; height:36px;
+  border:none; border-radius:var(--radius-md); background:transparent; color:var(--fg-2); cursor:pointer; text-align:left;
+  font-size:var(--text-base); transition:background-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard); }
+.nav-item svg { width:16px; height:16px; flex:none; color:var(--muted); }
+.nav-item:hover { color:var(--fg); background:color-mix(in srgb,var(--fg) 5%,transparent); }
+.nav-item:hover svg,.nav-item.active svg { color:var(--fg); }
+.nav-item.active { color:var(--fg); font-weight:500; background:color-mix(in srgb,var(--fg) 8%,transparent); }
+.app-sider-foot { flex:none; padding:12px 14px 16px; border-top:1px solid color-mix(in srgb,var(--fg) 8%,transparent); display:flex; flex-direction:column; gap:8px; }
+.sider-user { font-size:var(--text-sm); color:var(--muted); padding:0 6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sider-user strong { color:var(--fg); font-weight:560; }
+.role-chip { display:inline-flex; align-items:center; height:18px; padding:0 6px; border-radius:var(--radius-sm);
+  background:color-mix(in srgb,var(--accent) 12%,transparent); color:var(--accent); font-size:var(--text-xs); margin-left:6px; }
 
-  .page-title { margin: 0; font-size: 24px; }
-  .page-sub { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
-  .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.app-body { flex:1 1 0; min-width:0; min-height:0; display:flex; flex-direction:column; margin:8px 8px 8px 0;
+  background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+.app-header { flex:none; height:var(--app-header-height); display:flex; align-items:center; justify-content:space-between; gap:16px; padding:0 16px 0 12px; }
+.app-header-left { display:flex; align-items:center; gap:8px; min-width:0; }
+.app-header-actions { display:flex; align-items:center; gap:6px; }
+.breadcrumb { display:flex; align-items:center; gap:8px; font-size:var(--text-sm); color:var(--muted); white-space:nowrap; min-width:0; }
+.breadcrumb .current { color:var(--fg); overflow:hidden; text-overflow:ellipsis; }
+.app-content { flex:1 1 0; min-height:0; overflow:auto; }
+.terminal-page { max-width:1440px; margin:0 auto; padding:32px 32px 48px; }
+.terminal-page-stack { display:flex; flex-direction:column; gap:16px; }
+.terminal-page-head { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:8px; }
+.terminal-title { margin:0; font-size:var(--text-xl); font-weight:600; line-height:32px; letter-spacing:-.01em; }
+.terminal-subtitle { margin:2px 0 0; color:var(--muted); font-size:var(--text-md); }
+.terminal-page-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 
-  .panel {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 16px 18px;
-  }
-  .panel h3 { margin: 0 0 12px; font-size: 15px; }
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
-  .stat-label { font-size: 13px; opacity: 0.7; }
-  .stat-value { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; margin-top: 4px; }
-  .stat-meta { font-size: 12px; opacity: 0.7; margin-top: 4px; }
-  .grid-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:8px; }
+.stat-tile { display:flex; flex-direction:column; gap:6px; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); min-width:0; }
+.stat-tile-label { color:var(--fg-2); font-size:var(--text-sm); }
+.stat-tile-value { color:var(--fg); font-size:var(--text-xl); font-weight:600; line-height:1.1; font-variant-numeric:tabular-nums; }
+.stat-tile-meta { color:var(--muted); font-size:var(--text-sm); }
 
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); }
-  th { color: var(--muted); font-weight: 550; font-size: 12px; }
-  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-  .mono { font-family: var(--mono); font-size: 12px; }
-  .tag {
-    display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px;
-    font-size: 12px; font-weight: 560;
-  }
-  .tag-success { background: var(--success-bg); color: var(--success); }
-  .tag-warn { background: var(--warn-bg); color: var(--warn); }
-  .tag-neutral { background: var(--neutral-bg); color: var(--muted); }
-  .tag-danger { background: var(--danger-bg); color: var(--danger); }
+.panel { border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--bg); padding:20px; }
+.panel-title { margin:0 0 12px; font-size:var(--text-base); font-weight:600; }
+.grid-two { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
+.data-table { border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--bg); overflow:hidden; }
+.data-table table { width:100%; border-collapse:collapse; font-size:var(--text-md); }
+.data-table th { text-align:left; padding:8px 16px; color:var(--muted); font-weight:500; font-size:var(--text-sm); border-bottom:1px solid var(--border-soft); }
+.data-table td { padding:12px 16px; border-bottom:1px solid var(--border-soft); }
+.data-table tr:last-child td { border-bottom:0; }
+.data-table tbody tr:hover td { background:color-mix(in srgb,var(--fg) 3%,transparent); }
+.data-table .num { text-align:right; font-variant-numeric:tabular-nums; }
+.mono { font-family:var(--font-mono); font-size:var(--text-sm); font-variant-numeric:tabular-nums; }
+.tag { --tag-tone:var(--fg-2); display:inline-flex; align-items:center; height:22px; padding:0 7px; border-radius:var(--radius-sm);
+  background:color-mix(in srgb,var(--fg) 6%,transparent); color:var(--tag-tone); font-size:var(--text-sm); }
+.tag.is-small { height:18px; padding:0 6px; font-size:var(--text-xs); }
+.tag.is-success { --tag-tone:var(--success); background:color-mix(in srgb,var(--tag-tone) 12%,transparent); }
+.tag.is-warn { --tag-tone:var(--warn); background:color-mix(in srgb,var(--tag-tone) 12%,transparent); }
+.tag.is-danger { --tag-tone:var(--danger); background:color-mix(in srgb,var(--tag-tone) 12%,transparent); }
+.tag.is-accent { --tag-tone:var(--accent); background:color-mix(in srgb,var(--tag-tone) 12%,transparent); }
+.omc-notice { --notice-tone:var(--accent); padding:10px 14px 12px; font-size:var(--text-md);
+  background:color-mix(in srgb,var(--notice-tone) 8%,var(--bg)); border:1px solid color-mix(in srgb,var(--notice-tone) 16%,transparent); border-radius:var(--radius-md); }
+.omc-notice.is-warning { --notice-tone:var(--warn); }
+.footer-note { color:var(--muted); font-size:var(--text-sm); margin-top:12px; }
+.secret { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:10px 12px; border-radius:var(--radius-sm);
+  background:color-mix(in srgb,var(--fg) 5%,transparent); font-family:var(--font-mono); font-size:var(--text-sm); word-break:break-all; }
+.fact-list { margin:0; }
+.fact-list-row { display:flex; justify-content:space-between; gap:16px; padding:9px 0; border-bottom:1px solid var(--border-soft); }
+.fact-list-row:last-child { border-bottom:0; }
+.fact-list dt { color:var(--muted); font-size:var(--text-md); }
+.fact-list dd { margin:0; font-size:var(--text-md); font-weight:600; font-variant-numeric:tabular-nums; }
+.placeholder-block { border:1px dashed var(--border); border-radius:var(--radius-lg); padding:28px; color:var(--muted); font-size:var(--text-md); text-align:center; }
+.spark { height:48px; margin-top:10px; border-radius:4px; background:linear-gradient(180deg, color-mix(in srgb,var(--accent) 22%,transparent), transparent);
+  border-bottom:1px solid var(--border-soft); position:relative; overflow:hidden; }
+.spark::after { content:""; position:absolute; inset:auto 0 0 0; height:2px; background:var(--accent); opacity:.7; }
 
-  .secret {
-    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-    padding: 10px 12px; border-radius: var(--radius-sm);
-    background: var(--bg-surface); font-family: var(--mono); font-size: 13px; word-break: break-all;
-  }
-  .notice {
-    background: color-mix(in srgb, var(--accent) 10%, var(--bg));
-    border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
-    border-radius: var(--radius-sm); padding: 12px 14px; font-size: 14px;
-  }
-  .modal-backdrop {
-    position: fixed; inset: 0; background: rgba(15,23,42,.45);
-    display: grid; place-items: center; padding: 16px; z-index: 50;
-  }
-  .modal {
-    width: min(480px, 100%); background: var(--elevated); border-radius: var(--radius-lg);
-    border: 1px solid var(--border); box-shadow: var(--shadow); padding: 20px;
-  }
-  .modal h3 { margin: 0 0 8px; }
-  .modal p { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
-  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
-  .footer-note { color: var(--muted); font-size: 12px; margin-top: 8px; }
+.modal-backdrop { position:fixed; inset:0; background:var(--overlay-mask); display:grid; place-items:center; padding:16px; z-index:50; }
+.modal { width:min(480px,100%); background:var(--elevated); border-radius:var(--radius-lg); border:1px solid var(--border); box-shadow:var(--shadow-overlay); padding:20px; }
+.modal h3 { margin:0 0 8px; font-size:var(--text-lg); font-weight:600; }
+.modal p { margin:0 0 12px; color:var(--muted); font-size:var(--text-md); }
+.modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:16px; }
 
-  .app-shell.collapsed { --sider-w: 58px; }
-  .app-shell.collapsed .app-brand { justify-content: center; padding: 0; }
-  .app-shell.collapsed .app-brand .suffix,
-  .app-shell.collapsed .nav-group-title,
-  .app-shell.collapsed .nav-item span,
-  .app-shell.collapsed .sider-user,
-  .app-shell.collapsed .sider-signout-label { display: none; }
-  .app-shell.collapsed .nav-item { justify-content: center; padding: 0; }
-  .app-shell.collapsed .app-sider-foot { align-items: center; }
-  .app-shell.collapsed .wordmark-full { display: none !important; }
-  .app-shell.collapsed .wordmark-mark { display: block !important; }
-  .wordmark-mark { display: none; height: 20px; width: 20px; }
-
-  .mobile-only { display: none; }
-  @media (max-width: 900px) {
-    .app-sider { display: none; }
-    .app-shell.mobile-nav-open .app-sider {
-      display: flex; position: fixed; inset: 42px auto 0 0; z-index: 30;
-      box-shadow: var(--shadow); border-right: 1px solid var(--border);
-    }
-    .mobile-mask {
-      display: none; position: fixed; inset: 42px 0 0 0; background: rgba(15,23,42,.35); z-index: 25;
-    }
-    .app-shell.mobile-nav-open .mobile-mask { display: block; }
-    .app-body { margin: 0; border: 0; border-radius: 0; }
-    .mobile-only { display: inline-flex; }
-    .desktop-only { display: none !important; }
-    .app-content { padding: 16px; }
-  }
-
-  .wordmark-dark { display: none; }
-  @media (prefers-color-scheme: dark) {
-    .wordmark-light { display: none; }
-    .wordmark-dark { display: inline; }
-  }
+.app-shell.collapsed { --sider-w:58px; }
+.app-shell.collapsed .app-brand { justify-content:center; padding:0; }
+.app-shell.collapsed .app-brand .suffix,.app-shell.collapsed .nav-group-title,.app-shell.collapsed .nav-item span,
+.app-shell.collapsed .sider-user,.app-shell.collapsed .sider-signout-label { display:none; }
+.app-shell.collapsed .nav-item { justify-content:center; padding:0; }
+.app-shell.collapsed .app-sider-foot { align-items:center; }
+.app-shell.collapsed .wordmark-full { display:none!important; }
+.app-shell.collapsed .wordmark-mark { display:block!important; }
+.wordmark-mark { display:none; height:20px; width:20px; }
+html[data-theme-mode=dark] .wordmark-light { display:none; }
+html[data-theme-mode=dark] .wordmark-dark { display:inline; }
+html[data-theme-mode=light] .wordmark-dark { display:none; }
+html[data-theme-mode=light] .wordmark-light { display:inline; }
+.mobile-only { display:none; }
+@media (max-width:900px) {
+  .app-sider { display:none; }
+  .app-shell.mobile-nav-open .app-sider { display:flex; position:fixed; inset:37px auto 0 0; z-index:30; background:var(--elevated); border-right:1px solid var(--border); box-shadow:var(--shadow-float); }
+  .mobile-mask { display:none; position:fixed; inset:37px 0 0 0; background:var(--overlay-mask); z-index:25; }
+  .app-shell.mobile-nav-open .mobile-mask { display:block; }
+  .app-body { margin:0; border:0; border-radius:0; }
+  .mobile-only { display:inline-flex; }
+  .desktop-only { display:none!important; }
+  .terminal-page { padding:24px 16px 40px; }
+}
 </style>
 </head>
 <body>
-  <div class="banner">
-    <strong>静态 UI 演示 · 演示数据</strong>
-    — 这不是真实 CPA / Oh My CPA 后端。密钥不会同步到网关，也无法发起真实 AI 请求。
-    源码见
-    <a href="https://github.com/ibi6/oh-my-cpa/tree/feat/distribution-p1" target="_blank" rel="noopener">ibi6/oh-my-cpa</a>
-  </div>
-  <div id="app"></div>
-
+<div class="banner"><strong>静态 UI 演示 · 演示数据</strong> — 全原生控制台 / 门户壳；权限不同。不连接真实 CPA。
+<a href="https://github.com/ibi6/oh-my-cpa/tree/feat/distribution-p1" target="_blank" rel="noopener">源码</a></div>
+<div id="app"></div>
 <script>
-(() => {
-  const STATE_KEY = 'omc-portal-demo-v1';
-  const COLLAPSE_KEY = 'omc-portal-demo-collapsed';
 
-  const ICONS = {
-    overview: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
-    keys: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="8" cy="15" r="4"/><path d="M10.5 12.5 20 3m0 0h-4m4 0v4"/><circle cx="8" cy="15" r="1.2" fill="currentColor" stroke="none"/></svg>',
-    usage: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>',
-    account: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg>',
+(() => {
+  const AUTH_KEY = 'omc-native-demo-auth-v2';
+  const COLLAPSE_KEY = 'omc-native-demo-collapsed';
+  const THEME_KEY = 'omc-native-demo-theme';
+
+  const I = {
+    dash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+    agent: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="5" y="8" width="14" height="10" rx="2"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><circle cx="9.5" cy="13" r="1" fill="currentColor"/><circle cx="14.5" cy="13" r="1" fill="currentColor"/></svg>',
+    play: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M8 4h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="m10 9 5 3-5 3z"/></svg>',
+    square: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>',
+    cloud: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 12.2 3.5 3.5 0 0 0 7 18z"/></svg>',
+    login: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M21 21V3"/></svg>',
+    key: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="15" r="4"/><path d="M10.5 12.5 20 3m0 0h-4m4 0v4"/></svg>',
+    users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 19c.8-3 3.2-4.5 6.5-4.5s5.7 1.5 6.5 4.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5c2.2.3 3.8 1.4 4.5 3.5"/></svg>',
+    hist: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>',
+    dollar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 2v20"/><path d="M17 7c0-2-2-3-5-3s-5 1-5 3 2 3 5 3 5 1 5 3-2 3-5 3-5-1-5-3"/></svg>',
+    log: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M7 4h10a2 2 0 0 1 2 2v14l-3-2-3 2-3-2-3 2V6a2 2 0 0 1 2-2z"/><path d="M9 9h6M9 13h6"/></svg>',
+    audit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>',
+    puzzle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 4v3a2 2 0 1 0 0 4v3h3a2 2 0 1 1 0 4h-3v2H8v-2H5a2 2 0 1 1 0-4h3v-3a2 2 0 1 0 0-4V4z"/></svg>',
+    shop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 9h16l-1 11H5L4 9z"/><path d="M8 9V7a4 4 0 0 1 8 0v2"/></svg>',
+    cfg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>',
+    settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.3.6.9 1 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>',
+    overview: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+    account: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg>',
     menu: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
     fold: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 6h10M4 12h16M4 18h10"/><path d="m15 9-3 3 3 3"/></svg>',
     unfold: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 6h16M4 12h10M4 18h16"/><path d="m12 9 3 3-3 3"/></svg>',
     logout: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>',
+    sun: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+    moon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"/></svg>',
   };
 
-  const NAV = [
-    { group: '使用', items: [
-      { path: '/overview', label: '概览', icon: 'overview', crumb: '概览' },
-      { path: '/keys', label: 'API 密钥', icon: 'keys', crumb: 'API 密钥' },
-      { path: '/usage', label: '使用记录', icon: 'usage', crumb: '使用记录' },
+  // Native console nav (STATIC_NAV_GROUPS + plugins), Simplified Chinese
+  const ADMIN_NAV = [
+    { group: '运行', items: [
+      { path: '/dashboard', label: '仪表盘', icon: 'dash' },
+      { path: '/agent', label: '智能体', icon: 'agent' },
+      { path: '/playground', label: '操练场', icon: 'play' },
+      { path: '/model-square', label: '模型广场', icon: 'square' },
     ]},
-    { group: '账户', items: [
-      { path: '/account', label: '账户', icon: 'account', crumb: '账户' },
+    { group: '网关', items: [
+      { path: '/ai-providers', label: 'AI 提供商', icon: 'cloud' },
+      { path: '/oauth-management', label: 'OAuth 管理', icon: 'login' },
+      { path: '/api-keys', label: '密钥管理', icon: 'key' },
+      { path: '/portal-users', label: '客户账户', icon: 'users' },
+    ]},
+    { group: '观测', items: [
+      { path: '/usage/events', label: '请求记录', icon: 'hist' },
+      { path: '/pricing', label: '费用与用量', icon: 'dollar' },
+      { path: '/logs', label: '日志查看', icon: 'log' },
+      { path: '/audit', label: '操作审计', icon: 'audit' },
+    ]},
+    { group: '插件', items: [
+      { path: '/plugins', label: '插件管理', icon: 'puzzle' },
+      { path: '/plugins/store', label: '插件商店', icon: 'shop' },
+    ]},
+    { group: '控制', items: [
+      { path: '/config', label: '配置面板', icon: 'cfg' },
+      { path: '/omc-settings', label: 'OMC 设置', icon: 'settings' },
+      { path: '/system', label: '系统信息', icon: 'info' },
     ]},
   ];
-  const ALL_ITEMS = NAV.flatMap(g => g.items);
 
-  const sampleKeys = [
+  const PORTAL_NAV = [
+    { group: '使用', items: [
+      { path: '/portal/overview', label: '概览', icon: 'overview' },
+      { path: '/portal/keys', label: 'API 密钥', icon: 'key' },
+      { path: '/portal/usage', label: '使用记录', icon: 'hist' },
+    ]},
+    { group: '账户', items: [
+      { path: '/portal/account', label: '账户', icon: 'account' },
+    ]},
+  ];
+
+  const customers = [
+    { id: 1, username: 'trial', display: '试用客户', status: 'active', keys: 2, req: 1816, cost: 86.42, last: '2026-10-22 14:18' },
+    { id: 2, username: 'acme', display: 'Acme Labs', status: 'active', keys: 4, req: 9204, cost: 412.08, last: '2026-10-22 13:02' },
+    { id: 3, username: 'nova', display: 'Nova AI', status: 'disabled', keys: 0, req: 120, cost: 3.10, last: '2026-10-10 09:41' },
+  ];
+  const portalKeys = [
     { id: 1, name: '笔记本', prefix: 'sk-omc-RDkO', last4: 'yADn', state: 'active', requests: 1284, last_used: '2026-10-22 14:18', created: '2026-10-20 09:12' },
     { id: 2, name: 'CI', prefix: 'sk-omc-7pQm', last4: 'k2Lx', state: 'active', requests: 532, last_used: '2026-10-22 11:02', created: '2026-10-18 16:40' },
     { id: 3, name: '旧手机', prefix: 'sk-omc-ab12', last4: '9Zq1', state: 'revoked', requests: 88, last_used: '2026-10-12 08:21', created: '2026-09-30 10:00' },
   ];
-  const sampleOverview = {
-    window_days: 30,
-    totals: { requests: 1816, failed: 23, tokens: 42580000, input: 31200000, output: 11380000, cost: 86.42 },
-    last24h: { requests: 96, tokens: 2140000 },
-    lifetime: { requests: 12450, tokens: 310000000 },
-    models: [
-      { model: 'claude-sonnet-4', requests: 980, tokens: 24100000, cost: 52.10 },
-      { model: 'gpt-5', requests: 610, tokens: 14800000, cost: 28.40 },
-      { model: 'gemini-2.5-pro', requests: 226, tokens: 3680000, cost: 5.92 },
-    ],
-    keys: [
-      { name: '笔记本', requests: 1284, tokens: 30200000, cost: 61.20 },
-      { name: 'CI', requests: 532, tokens: 12380000, cost: 25.22 },
-    ],
-    daily: [
-      { day: '2026-10-22', requests: 96, failed: 2, tokens: 2140000, cost: 4.28 },
-      { day: '2026-10-21', requests: 142, failed: 1, tokens: 3420000, cost: 6.91 },
-      { day: '2026-10-20', requests: 118, failed: 0, tokens: 2880000, cost: 5.74 },
-      { day: '2026-10-19', requests: 87, failed: 3, tokens: 1950000, cost: 3.88 },
-      { day: '2026-10-18', requests: 155, failed: 4, tokens: 4010000, cost: 8.12 },
-    ],
-  };
-  const sampleEvents = [
+  const portalEvents = [
     { time: '2026-10-22 14:18:02', key: '笔记本', model: 'claude-sonnet-4', result: '200', input: 4200, output: 910, latency: '1.8s', cost: 0.042 },
     { time: '2026-10-22 14:12:41', key: 'CI', model: 'gpt-5', result: '200', input: 1800, output: 640, latency: '1.1s', cost: 0.021 },
     { time: '2026-10-22 13:55:09', key: '笔记本', model: 'claude-sonnet-4', result: '失败 429', input: 0, output: 0, latency: '0.2s', cost: 0 },
     { time: '2026-10-22 13:40:17', key: '笔记本', model: 'gemini-2.5-pro', result: '200', input: 2600, output: 720, latency: '2.4s', cost: 0.015 },
-    { time: '2026-10-22 12:08:33', key: 'CI', model: 'gpt-5', result: '200', input: 950, output: 310, latency: '0.9s', cost: 0.011 },
-    { time: '2026-10-22 11:22:05', key: '笔记本', model: 'claude-sonnet-4', result: '200', input: 5100, output: 1200, latency: '2.1s', cost: 0.051 },
+  ];
+  const adminKeys = [
+    { name: 'ops-main', mask: 'sk-ops-••••••a1', requests: 22010 },
+    { name: 'ci-runner', mask: 'sk-ops-••••••b2', requests: 8044 },
+    { name: 'portal:trial/笔记本', mask: 'sk-omc-RDkO…yADn', requests: 1284 },
   ];
 
+  let loginRole = 'admin';
+  let authError = '';
   let issuedSecret = null;
   let createOpen = false;
-  let authError = '';
   let mobileNavOpen = false;
   let collapsed = localStorage.getItem(COLLAPSE_KEY) === '1';
 
-  function loadAuth() {
-    try { return JSON.parse(localStorage.getItem(STATE_KEY) || 'null'); } catch { return null; }
+  function themeMode() {
+    return document.documentElement.getAttribute('data-theme-mode') || 'dark';
   }
-  function saveAuth(v) {
-    if (v) localStorage.setItem(STATE_KEY, JSON.stringify(v));
-    else localStorage.removeItem(STATE_KEY);
+  function setTheme(mode) {
+    document.documentElement.setAttribute('data-theme-mode', mode);
+    localStorage.setItem(THEME_KEY, mode);
   }
+  (function initTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'light' || saved === 'dark') setTheme(saved);
+    else setTheme(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  })();
+
+  function loadAuth() { try { return JSON.parse(localStorage.getItem(AUTH_KEY) || 'null'); } catch { return null; } }
+  function saveAuth(v) { if (v) localStorage.setItem(AUTH_KEY, JSON.stringify(v)); else localStorage.removeItem(AUTH_KEY); }
   function fmt(n) { return new Intl.NumberFormat('zh-CN').format(n); }
-  function fmtTokens(n) {
-    if (n >= 1e6) return (n / 1e6).toFixed(n >= 1e7 ? 1 : 2) + 'M';
-    if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
-    return fmt(n);
-  }
+  function fmtTokens(n) { if (n >= 1e6) return (n/1e6).toFixed(n>=1e7?1:2)+'M'; if (n>=1e3) return (n/1e3).toFixed(1)+'K'; return fmt(n); }
   function fmtUSD(n) { return '$' + Number(n).toFixed(2); }
-
-  function wordmark(full = true) {
-    if (!full) {
-      return `<svg class="wordmark-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#4f46e5"/><text x="16" y="22" text-anchor="middle" fill="white" font-size="14" font-family="system-ui">o</text></svg>`;
-    }
-    return `
-      <span class="wordmark-full">
-        <img class="wordmark-light" src="./omc-wordmark-light.svg" alt="Oh My CPA" />
-        <img class="wordmark-dark" src="./omc-wordmark-dark.svg" alt="Oh My CPA" />
-      </span>
-      ${wordmark(false)}
-    `;
+  function wordmark(full=true) {
+    if (!full) return `<svg class="wordmark-mark" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#00a2fb"/><text x="16" y="22" text-anchor="middle" fill="white" font-size="14" font-family="system-ui">o</text></svg>`;
+    return `<span class="wordmark-full"><img class="wordmark-light" src="./omc-wordmark-light.svg" alt="Oh My CPA" /><img class="wordmark-dark" src="./omc-wordmark-dark.svg" alt="Oh My CPA" /></span>${wordmark(false)}`;
   }
-
   function route() {
-    const h = (location.hash || '#/login').replace(/^#/, '') || '/login';
-    return h.startsWith('/') ? h : '/' + h;
+    const h = (location.hash || '').replace(/^#/, '') || '';
+    return h.startsWith('/') ? h : (h ? '/' + h : '');
   }
-  function navigate(path) {
-    location.hash = path.startsWith('#') ? path : '#' + path;
+  function navigate(path) { location.hash = path.startsWith('#') ? path : '#' + path; }
+
+  function navFor(auth) { return auth.role === 'admin' ? ADMIN_NAV : PORTAL_NAV; }
+  function flatNav(auth) { return navFor(auth).flatMap(g => g.items.map(i => ({ ...i, group: g.group }))); }
+  function homePath(auth) { return auth.role === 'admin' ? '/dashboard' : '/portal/overview'; }
+  function findItem(auth, path) {
+    const items = flatNav(auth);
+    return items.find(i => path === i.path || path.startsWith(i.path + '/')) || items[0];
   }
 
   function render() {
     const app = document.getElementById('app');
-    const path = route();
     const auth = loadAuth();
+    let path = route();
 
-    if (!auth && path !== '/login') { navigate('/login'); return; }
-    if (auth && (path === '/login' || path === '/')) { navigate('/overview'); return; }
-
-    if (path === '/login') {
+    if (!auth) {
+      if (path && path !== '/login') { navigate('/login'); return; }
       app.innerHTML = renderLogin();
       bindLogin();
       return;
     }
 
-    const page = {
-      '/overview': renderOverview,
-      '/keys': renderKeys,
-      '/usage': renderUsage,
-      '/account': renderAccount,
-    }[path] || renderOverview;
+    // Role gates: customer cannot open admin routes
+    if (auth.role === 'customer' && !path.startsWith('/portal')) {
+      navigate(homePath(auth)); return;
+    }
+    if (auth.role === 'admin' && (path.startsWith('/portal') || !path)) {
+      // admin may still peek portal? No — 皇上 said admin enters management console.
+      if (!path || path === '/' || path === '/login' || path.startsWith('/portal')) {
+        navigate(homePath(auth)); return;
+      }
+    }
+    if (!path || path === '/login') { navigate(homePath(auth)); return; }
 
-    const item = ALL_ITEMS.find(i => i.path === path) || ALL_ITEMS[0];
-    const group = NAV.find(g => g.items.some(i => i.path === item.path));
+    const item = findItem(auth, path);
+    // If path unknown for role, bounce home
+    if (!flatNav(auth).some(i => path === i.path || path.startsWith(i.path + '/'))) {
+      navigate(homePath(auth)); return;
+    }
 
     app.innerHTML = `
       <div class="app-shell${collapsed ? ' collapsed' : ''}${mobileNavOpen ? ' mobile-nav-open' : ''}">
         <div class="mobile-mask" id="mobile-mask"></div>
-        <aside class="app-sider" aria-label="客户中心导航">
-          <div class="app-brand" id="brand-home" title="概览">
-            ${wordmark(true)}
-            <span class="suffix">客户中心</span>
-          </div>
+        <aside class="app-sider" aria-label="${auth.role === 'admin' ? '控制台导航' : '客户中心导航'}">
+          <div class="app-brand" id="brand-home">${wordmark(true)}${auth.role === 'customer' ? '<span class="suffix">客户中心</span>' : ''}</div>
           <div class="app-sider-scroll">
-            ${NAV.map(g => `
+            ${navFor(auth).map(g => `
               <div class="nav-group">
                 <div class="nav-group-title">${g.group}</div>
                 ${g.items.map(i => `
-                  <button type="button" class="nav-item${i.path === path ? ' active' : ''}" data-nav="${i.path}" title="${i.label}">
-                    ${ICONS[i.icon]}<span>${i.label}</span>
-                  </button>
-                `).join('')}
-              </div>
-            `).join('')}
+                  <button type="button" class="nav-item${item.path === i.path ? ' active' : ''}" data-nav="${i.path}" title="${i.label}">
+                    ${I[i.icon] || I.dash}<span>${i.label}</span>
+                  </button>`).join('')}
+              </div>`).join('')}
           </div>
           <div class="app-sider-foot">
-            <div class="sider-user"><strong>${auth.display_name || auth.username}</strong></div>
-            <button type="button" class="btn btn-ghost btn-block" id="sign-out" title="退出">
-              ${ICONS.logout}<span class="sider-signout-label">退出</span>
-            </button>
+            <div class="sider-user"><strong>${auth.display_name || auth.username}</strong><span class="role-chip">${auth.role === 'admin' ? '管理员' : '客户'}</span></div>
+            <button type="button" class="btn btn-ghost btn-block" id="sign-out">${I.logout}<span class="sider-signout-label">退出</span></button>
           </div>
         </aside>
         <div class="app-body">
           <header class="app-header">
             <div class="app-header-left">
-              <button type="button" class="collapse-btn mobile-only" id="open-mobile-nav" aria-label="打开导航">${ICONS.menu}</button>
-              <button type="button" class="collapse-btn desktop-only" id="toggle-collapse" aria-label="${collapsed ? '展开侧栏' : '收起侧栏'}">${collapsed ? ICONS.unfold : ICONS.fold}</button>
-              <div class="breadcrumb">
-                <span>${group ? group.group : '客户中心'}</span>
-                <span class="sep">/</span>
-                <span class="current">${item.crumb}</span>
-              </div>
+              <button type="button" class="btn-text mobile-only" id="open-mobile-nav" aria-label="打开导航">${I.menu}</button>
+              <button type="button" class="btn-text desktop-only" id="toggle-collapse" aria-label="折叠侧栏">${collapsed ? I.unfold : I.fold}</button>
+              <div class="breadcrumb"><span>${item.group}</span><span class="sep">/</span><span class="current">${item.label}</span></div>
             </div>
             <div class="app-header-actions">
-              <span style="font-size:12px;color:var(--muted)">演示数据</span>
+              <button type="button" class="btn-text" id="toggle-theme" title="切换主题">${themeMode() === 'dark' ? I.sun : I.moon}</button>
+              <span style="font-size:var(--text-xs);color:var(--muted)">演示数据</span>
             </div>
           </header>
-          <main class="app-content">
-            <div class="content-inner">${page(auth)}</div>
-          </main>
+          <main class="app-content"><div class="terminal-page terminal-page-stack">${renderPage(auth, path)}</div></main>
         </div>
       </div>
       ${createOpen ? renderCreateModal() : ''}
       ${issuedSecret ? renderIssuedModal() : ''}
     `;
-    bindShell();
+    bindShell(auth);
   }
 
   function renderLogin() {
     return `
       <div class="auth-shell">
+        <header class="auth-header">
+          <button type="button" class="btn-text" id="toggle-theme" title="切换主题">${themeMode() === 'dark' ? I.sun : I.moon}</button>
+        </header>
         <main class="auth-main">
           <section class="auth-card">
             <div class="auth-brand">${wordmark(true)}</div>
-            <h1 class="auth-title">登录客户中心</h1>
-            <p class="auth-sub">静态演示 · 任意非空密码即可进入（演示数据）</p>
+            <h1 class="auth-title">登录</h1>
+            <p class="auth-sub">全原生静态演示 · 选角色后任意非空密码即可进入</p>
             ${authError ? `<div class="error">${authError}</div>` : ''}
+            <div class="role-picks">
+              <button type="button" class="role-pick${loginRole==='admin'?' active':''}" data-role="admin">
+                <div><b>管理员</b><span>进入原生控制台壳：运行 / 网关（含客户账户）/ 观测 / 插件 / 控制</span></div>
+              </button>
+              <button type="button" class="role-pick${loginRole==='customer'?' active':''}" data-role="customer">
+                <div><b>客户</b><span>只进客户门户：概览 / API 密钥 / 使用记录 / 账户，看不到管理菜单</span></div>
+              </button>
+            </div>
             <form id="login-form">
-              <div class="field"><label for="username">用户名</label><input id="username" name="username" autocomplete="username" value="trial" spellcheck="false" /></div>
-              <div class="field"><label for="password">密码</label><input id="password" name="password" type="password" autocomplete="current-password" value="demo" /></div>
+              <div class="field"><label>用户名</label><input name="username" value="${loginRole==='admin'?'admin':'trial'}" autocomplete="username" /></div>
+              <div class="field"><label>密码</label><input name="password" type="password" value="demo" autocomplete="current-password" /></div>
               <button class="btn btn-primary btn-block" type="submit">登录</button>
             </form>
-            <p class="hint">推荐账号：<code>trial</code> / <code>demo</code></p>
+            <p class="hint">推荐：管理员 <code>admin</code> / <code>demo</code> · 客户 <code>trial</code> / <code>demo</code></p>
           </section>
         </main>
-      </div>
-    `;
+      </div>`;
   }
 
   function bindLogin() {
+    document.querySelectorAll('[data-role]').forEach(btn => btn.addEventListener('click', () => {
+      loginRole = btn.getAttribute('data-role');
+      authError = '';
+      render();
+    }));
+    document.getElementById('toggle-theme')?.addEventListener('click', () => { setTheme(themeMode()==='dark'?'light':'dark'); render(); });
     document.getElementById('login-form')?.addEventListener('submit', (e) => {
       e.preventDefault();
-      const form = e.target;
-      const username = form.username.value.trim();
-      const password = form.password.value;
+      const username = e.target.username.value.trim();
+      const password = e.target.password.value;
       if (!username || !password) { authError = '请输入用户名和密码'; render(); return; }
+      const role = loginRole;
+      saveAuth({
+        role,
+        username,
+        display_name: role === 'admin' ? (username === 'admin' ? '控制台管理员' : username) : (username === 'trial' ? '试用客户' : username),
+      });
       authError = '';
-      saveAuth({ username, display_name: username === 'trial' ? '试用客户' : username });
-      navigate('/overview');
+      navigate(homePath({ role }));
     });
   }
 
-  function renderOverview(auth) {
-    const o = sampleOverview;
+  function renderPage(auth, path) {
+    if (auth.role === 'customer') {
+      if (path.startsWith('/portal/keys')) return pagePortalKeys();
+      if (path.startsWith('/portal/usage')) return pagePortalUsage();
+      if (path.startsWith('/portal/account')) return pagePortalAccount(auth);
+      return pagePortalOverview(auth);
+    }
+    // admin
+    if (path.startsWith('/portal-users')) return pageCustomers();
+    if (path.startsWith('/api-keys')) return pageAdminKeys();
+    if (path.startsWith('/usage/events')) return pageAdminEvents();
+    if (path.startsWith('/dashboard')) return pageDashboard();
+    if (path.startsWith('/pricing')) return pagePricing();
+    if (path.startsWith('/system')) return pageSystem();
+    // generic native placeholder for other console pages
+    const item = findItem(auth, path);
     return `
-      <div class="toolbar">
-        <div>
-          <h1 class="page-title">${auth.display_name || auth.username}，你好</h1>
-          <p class="page-sub">你的 API 使用情况 · <strong>演示数据</strong></p>
-        </div>
-      </div>
-      <div class="notice">接入地址（演示）：<code class="mono">https://api.example.com/v1</code> — 用 API 密钥作为 Bearer。真实环境由运营方配置。</div>
+      <div class="terminal-page-head"><div class="terminal-page-heading">
+        <h1 class="terminal-title">${item.label}</h1>
+        <p class="terminal-subtitle">原生控制台页面布局 · <strong>演示数据 / 静态占位</strong></p>
+      </div></div>
+      <div class="omc-notice is-warning">此页在真实产品中可写配置、调 CPA；静态演示只保留信息架构与视觉密度，不连接后端。</div>
+      <div class="placeholder-block">${item.label} 工作区（演示）</div>`;
+  }
+
+  function pageDashboard() {
+    return `
+      <div class="terminal-page-head"><div class="terminal-page-heading">
+        <h1 class="terminal-title">仪表盘</h1>
+        <p class="terminal-subtitle">网关运行概况 · 演示数据</p>
+      </div></div>
       <div class="stats">
-        <div class="panel"><div class="stat-label">近 ${o.window_days} 天请求</div><div class="stat-value">${fmt(o.totals.requests)}</div><div class="stat-meta">失败 ${fmt(o.totals.failed)}</div></div>
-        <div class="panel"><div class="stat-label">近 ${o.window_days} 天 Token</div><div class="stat-value">${fmtTokens(o.totals.tokens)}</div><div class="stat-meta">输入 ${fmtTokens(o.totals.input)} · 输出 ${fmtTokens(o.totals.output)}</div></div>
-        <div class="panel"><div class="stat-label">近 ${o.window_days} 天费用估算</div><div class="stat-value">${fmtUSD(o.totals.cost)}</div><div class="stat-meta">演示估算</div></div>
-        <div class="panel"><div class="stat-label">最近 24 小时请求</div><div class="stat-value">${fmt(o.last24h.requests)}</div><div class="stat-meta">${fmtTokens(o.last24h.tokens)} Token</div></div>
-        <div class="panel"><div class="stat-label">累计请求</div><div class="stat-value">${fmt(o.lifetime.requests)}</div><div class="stat-meta">${fmtTokens(o.lifetime.tokens)} Token</div></div>
+        <div class="stat-tile"><div class="stat-tile-label">今日请求</div><div class="stat-tile-value">${fmt(12840)}</div><div class="stat-tile-meta">失败 86</div><div class="spark"></div></div>
+        <div class="stat-tile"><div class="stat-tile-label">今日 Token</div><div class="stat-tile-value">${fmtTokens(482000000)}</div><div class="stat-tile-meta">输入 61% · 输出 39%</div><div class="spark"></div></div>
+        <div class="stat-tile"><div class="stat-tile-label">今日费用</div><div class="stat-tile-value">${fmtUSD(1240.55)}</div><div class="stat-tile-meta">估算</div><div class="spark"></div></div>
+        <div class="stat-tile"><div class="stat-tile-label">客户账户</div><div class="stat-tile-value">${customers.length}</div><div class="stat-tile-meta">活跃 ${customers.filter(c=>c.status==='active').length}</div></div>
       </div>
       <div class="grid-two">
-        <div class="panel"><h3>按模型</h3>
-          <table><thead><tr><th>模型</th><th class="num">请求</th><th class="num">Token</th><th class="num">费用</th></tr></thead>
-          <tbody>${o.models.map(m => `<tr><td class="mono">${m.model}</td><td class="num">${fmt(m.requests)}</td><td class="num">${fmtTokens(m.tokens)}</td><td class="num">${fmtUSD(m.cost)}</td></tr>`).join('')}</tbody></table>
-        </div>
-        <div class="panel"><h3>按密钥</h3>
-          <table><thead><tr><th>密钥</th><th class="num">请求</th><th class="num">Token</th><th class="num">费用</th></tr></thead>
-          <tbody>${o.keys.map(k => `<tr><td>${k.name}</td><td class="num">${fmt(k.requests)}</td><td class="num">${fmtTokens(k.tokens)}</td><td class="num">${fmtUSD(k.cost)}</td></tr>`).join('')}</tbody></table>
-        </div>
-      </div>
-      <div class="panel"><h3>按天（UTC）</h3>
-        <table><thead><tr><th>日期 (UTC)</th><th class="num">失败</th><th class="num">请求</th><th class="num">Token</th><th class="num">费用</th></tr></thead>
-        <tbody>${o.daily.map(d => `<tr><td>${d.day}</td><td class="num">${fmt(d.failed)}</td><td class="num">${fmt(d.requests)}</td><td class="num">${fmtTokens(d.tokens)}</td><td class="num">${fmtUSD(d.cost)}</td></tr>`).join('')}</tbody></table>
-        <p class="footer-note">按天统计以 UTC 日期为准。以上均为演示数据。</p>
-      </div>
-    `;
-  }
-
-  function stateTag(state) {
-    const map = { active: ['tag-success', '可用'], pending: ['tag-warn', '同步中'], missing: ['tag-danger', '缺失'], revoked: ['tag-neutral', '已撤销'], expired: ['tag-neutral', '已过期'], suspended: ['tag-warn', '账户已停用'] };
-    const [cls, label] = map[state] || ['tag-neutral', state];
-    return `<span class="tag ${cls}">${label}</span>`;
-  }
-
-  function renderKeys() {
-    const active = sampleKeys.filter(k => k.state === 'active').length;
-    return `
-      <div class="toolbar">
-        <div><h1 class="page-title">API 密钥</h1><p class="page-sub">${active} / 5 个可用 · <strong>演示数据</strong></p></div>
-        <button class="btn btn-primary" id="open-create" type="button">+ 创建密钥</button>
-      </div>
-      <div class="panel">
-        <table>
-          <thead><tr><th>名称</th><th>密钥</th><th>状态</th><th class="num">请求</th><th>最近使用</th><th>创建时间</th><th></th></tr></thead>
+        <div class="panel"><div class="panel-title">热门模型</div>
+          <div class="data-table"><table><thead><tr><th>模型</th><th class="num">请求</th><th class="num">费用</th></tr></thead>
           <tbody>
-            ${sampleKeys.map(k => `
-              <tr>
-                <td>${k.name}</td><td class="mono">${k.prefix}…${k.last4}</td><td>${stateTag(k.state)}</td>
-                <td class="num">${fmt(k.requests)}</td><td>${k.last_used}</td><td>${k.created}</td>
-                <td>${k.state === 'active' ? `<button class="btn btn-danger" data-revoke="${k.id}" type="button">撤销</button>` : ''}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
-        <p class="footer-note">真实环境中 <code>sk-omc-…</code> 会同步进 CPA；本页只是 UI 演示。</p>
-      </div>
-    `;
+            <tr><td class="mono">claude-sonnet-4</td><td class="num">${fmt(5200)}</td><td class="num">${fmtUSD(610.2)}</td></tr>
+            <tr><td class="mono">gpt-5</td><td class="num">${fmt(4100)}</td><td class="num">${fmtUSD(420.1)}</td></tr>
+            <tr><td class="mono">gemini-2.5-pro</td><td class="num">${fmt(1540)}</td><td class="num">${fmtUSD(98.4)}</td></tr>
+          </tbody></table></div>
+        </div>
+        <div class="panel"><div class="panel-title">客户用量 Top</div>
+          <div class="data-table"><table><thead><tr><th>客户</th><th class="num">请求</th><th class="num">费用</th></tr></thead>
+          <tbody>${customers.filter(c=>c.status==='active').map(c=>`<tr><td>${c.display}</td><td class="num">${fmt(c.req)}</td><td class="num">${fmtUSD(c.cost)}</td></tr>`).join('')}</tbody></table></div>
+        </div>
+      </div>`;
   }
 
-  function renderUsage() {
+  function pageCustomers() {
     return `
-      <div class="toolbar"><div><h1 class="page-title">使用记录</h1><p class="page-sub">你的每一次请求，最新的在前 · <strong>演示数据</strong></p></div></div>
-      <div class="panel">
-        <table>
-          <thead><tr><th>时间</th><th>密钥</th><th>模型</th><th>结果</th><th class="num">输入</th><th class="num">输出</th><th class="num">耗时</th><th class="num">费用</th></tr></thead>
-          <tbody>
-            ${sampleEvents.map(e => `
-              <tr>
-                <td>${e.time}</td><td>${e.key}</td><td class="mono">${e.model}</td>
-                <td>${e.result.startsWith('失败') ? `<span class="tag tag-danger">${e.result}</span>` : `<span class="tag tag-success">${e.result}</span>`}</td>
-                <td class="num">${fmt(e.input)}</td><td class="num">${fmt(e.output)}</td><td class="num">${e.latency}</td><td class="num">${fmtUSD(e.cost)}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
-        <p class="footer-note">单笔记录按部署保留期限清理；按天统计会长期保留。</p>
+      <div class="terminal-page-head">
+        <div class="terminal-page-heading">
+          <h1 class="terminal-title">客户账户</h1>
+          <p class="terminal-subtitle">为客户开号、限额钥 · 演示数据</p>
+        </div>
+        <div class="terminal-page-actions"><button class="btn btn-primary" type="button" id="fake-create-customer">+ 创建客户</button></div>
       </div>
-    `;
+      <div class="omc-notice">注册模式：仅管理员创建（OMCPA_PORTAL_REGISTRATION=off）。客户自助入口在 <code class="mono">/omc/portal</code>。</div>
+      <div class="data-table"><table>
+        <thead><tr><th>用户名</th><th>显示名</th><th>状态</th><th class="num">密钥</th><th class="num">请求</th><th class="num">费用</th><th>最近使用</th></tr></thead>
+        <tbody>${customers.map(c => `
+          <tr>
+            <td class="mono">${c.username}</td><td>${c.display}</td>
+            <td>${c.status==='active'?'<span class="tag is-success is-small">活跃</span>':'<span class="tag is-small">停用</span>'}</td>
+            <td class="num">${c.keys}</td><td class="num">${fmt(c.req)}</td><td class="num">${fmtUSD(c.cost)}</td><td>${c.last}</td>
+          </tr>`).join('')}</tbody>
+      </table></div>`;
   }
 
-  function renderAccount(auth) {
+  function pageAdminKeys() {
     return `
-      <div class="toolbar"><div><h1 class="page-title">账户</h1><p class="page-sub">资料与密码 · <strong>演示数据</strong></p></div></div>
+      <div class="terminal-page-head"><div class="terminal-page-heading">
+        <h1 class="terminal-title">密钥管理</h1>
+        <p class="terminal-subtitle">CPA access.api-keys · 含门户同步进来的 sk-omc-…</p>
+      </div></div>
+      <div class="data-table"><table>
+        <thead><tr><th>名称</th><th>密钥</th><th class="num">请求</th></tr></thead>
+        <tbody>${adminKeys.map(k=>`<tr><td>${k.name}</td><td class="mono">${k.mask}</td><td class="num">${fmt(k.requests)}</td></tr>`).join('')}</tbody>
+      </table></div>
+      <p class="footer-note">门户创建的密钥会以 <code class="mono">portal:&lt;user&gt;/&lt;key&gt;</code> 命名出现在此列表。</p>`;
+  }
+
+  function pageAdminEvents() {
+    return `
+      <div class="terminal-page-head"><div class="terminal-page-heading">
+        <h1 class="terminal-title">请求记录</h1>
+        <p class="terminal-subtitle">可按客户账户筛选 · 演示数据</p>
+      </div></div>
+      <div class="data-table"><table>
+        <thead><tr><th>时间</th><th>客户</th><th>模型</th><th>结果</th><th class="num">Token</th><th class="num">费用</th></tr></thead>
+        <tbody>
+          <tr><td>2026-10-22 14:18</td><td>试用客户</td><td class="mono">claude-sonnet-4</td><td><span class="tag is-success is-small">200</span></td><td class="num">5.1K</td><td class="num">$0.04</td></tr>
+          <tr><td>2026-10-22 14:12</td><td>Acme Labs</td><td class="mono">gpt-5</td><td><span class="tag is-success is-small">200</span></td><td class="num">2.4K</td><td class="num">$0.02</td></tr>
+          <tr><td>2026-10-22 13:55</td><td>试用客户</td><td class="mono">claude-sonnet-4</td><td><span class="tag is-danger is-small">429</span></td><td class="num">0</td><td class="num">$0.00</td></tr>
+        </tbody>
+      </table></div>`;
+  }
+
+  function pagePricing() {
+    return `
+      <div class="terminal-page-head"><div class="terminal-page-heading">
+        <h1 class="terminal-title">费用与用量</h1>
+        <p class="terminal-subtitle">价目与用量汇总 · 演示数据</p>
+      </div></div>
+      <div class="stats">
+        <div class="stat-tile"><div class="stat-tile-label">本月费用</div><div class="stat-tile-value">${fmtUSD(18240.12)}</div></div>
+        <div class="stat-tile"><div class="stat-tile-label">本月 Token</div><div class="stat-tile-value">${fmtTokens(9.2e9)}</div></div>
+      </div>
+      <div class="panel"><div class="panel-title">价目表示意</div>
+        <div class="data-table"><table><thead><tr><th>模型</th><th class="num">输入 / 1M</th><th class="num">输出 / 1M</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">claude-sonnet-4</td><td class="num">$3.00</td><td class="num">$15.00</td></tr>
+          <tr><td class="mono">gpt-5</td><td class="num">$1.25</td><td class="num">$10.00</td></tr>
+        </tbody></table></div>
+      </div>`;
+  }
+
+  function pageSystem() {
+    return `
+      <div class="terminal-page-head"><div class="terminal-page-heading">
+        <h1 class="terminal-title">系统信息</h1>
+        <p class="terminal-subtitle">版本与健康 · 演示数据</p>
+      </div></div>
+      <div class="panel"><dl class="fact-list">
+        <div class="fact-list-row"><dt>Oh My CPA</dt><dd>v0.3.8-portal-p1</dd></div>
+        <div class="fact-list-row"><dt>CPA</dt><dd>v8.0.39</dd></div>
+        <div class="fact-list-row"><dt>门户</dt><dd>已启用</dd></div>
+        <div class="fact-list-row"><dt>注册</dt><dd>off（仅管理员创建）</dd></div>
+      </dl></div>`;
+  }
+
+  function pagePortalOverview(auth) {
+    return `
+      <div class="terminal-page-head"><div class="terminal-page-heading">
+        <h1 class="terminal-title">${auth.display_name || auth.username}，你好</h1>
+        <p class="terminal-subtitle">你的 API 使用情况 · 演示数据</p>
+      </div></div>
+      <div class="omc-notice">接入地址（演示）：<code class="mono">https://api.example.com/v1</code></div>
+      <div class="stats">
+        <div class="stat-tile"><div class="stat-tile-label">近 30 天请求</div><div class="stat-tile-value">${fmt(1816)}</div><div class="stat-tile-meta">失败 23</div></div>
+        <div class="stat-tile"><div class="stat-tile-label">近 30 天 Token</div><div class="stat-tile-value">${fmtTokens(42580000)}</div></div>
+        <div class="stat-tile"><div class="stat-tile-label">近 30 天费用</div><div class="stat-tile-value">${fmtUSD(86.42)}</div></div>
+        <div class="stat-tile"><div class="stat-tile-label">最近 24 小时</div><div class="stat-tile-value">${fmt(96)}</div></div>
+      </div>
       <div class="grid-two">
-        <div class="panel">
-          <h3>资料</h3>
-          <p><strong>用户名</strong><br /><span class="mono">${auth.username}</span></p>
-          <p><strong>显示名称</strong><br />${auth.display_name || '—'}</p>
-          <p class="footer-note">创建于 2026-10-20 09:00（演示）</p>
+        <div class="panel"><div class="panel-title">按模型</div>
+          <div class="data-table"><table><thead><tr><th>模型</th><th class="num">请求</th><th class="num">费用</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">claude-sonnet-4</td><td class="num">980</td><td class="num">$52.10</td></tr>
+            <tr><td class="mono">gpt-5</td><td class="num">610</td><td class="num">$28.40</td></tr>
+          </tbody></table></div>
         </div>
-        <div class="panel">
-          <h3>修改密码</h3>
+        <div class="panel"><div class="panel-title">按密钥</div>
+          <div class="data-table"><table><thead><tr><th>密钥</th><th class="num">请求</th><th class="num">费用</th></tr></thead>
+          <tbody>
+            <tr><td>笔记本</td><td class="num">1284</td><td class="num">$61.20</td></tr>
+            <tr><td>CI</td><td class="num">532</td><td class="num">$25.22</td></tr>
+          </tbody></table></div>
+        </div>
+      </div>`;
+  }
+
+  function pagePortalKeys() {
+    const active = portalKeys.filter(k => k.state === 'active').length;
+    return `
+      <div class="terminal-page-head">
+        <div class="terminal-page-heading">
+          <h1 class="terminal-title">API 密钥</h1>
+          <p class="terminal-subtitle">${active} / 5 个可用 · 演示数据</p>
+        </div>
+        <div class="terminal-page-actions"><button class="btn btn-primary" id="open-create" type="button">+ 创建密钥</button></div>
+      </div>
+      <div class="data-table"><table>
+        <thead><tr><th>名称</th><th>密钥</th><th>状态</th><th class="num">请求</th><th>最近使用</th><th></th></tr></thead>
+        <tbody>${portalKeys.map(k => `
+          <tr>
+            <td>${k.name}</td><td class="mono">${k.prefix}…${k.last4}</td>
+            <td>${k.state==='active'?'<span class="tag is-success is-small">可用</span>':'<span class="tag is-small">已撤销</span>'}</td>
+            <td class="num">${fmt(k.requests)}</td><td>${k.last_used}</td>
+            <td>${k.state==='active'?`<button class="btn btn-danger btn-sm" data-revoke="${k.id}" type="button">撤销</button>`:''}</td>
+          </tr>`).join('')}</tbody>
+      </table></div>
+      <p class="footer-note">真实环境会同步进 CPA；本页为静态演示。</p>`;
+  }
+
+  function pagePortalUsage() {
+    return `
+      <div class="terminal-page-head"><div class="terminal-page-heading">
+        <h1 class="terminal-title">使用记录</h1>
+        <p class="terminal-subtitle">你的每一次请求 · 演示数据</p>
+      </div></div>
+      <div class="data-table"><table>
+        <thead><tr><th>时间</th><th>密钥</th><th>模型</th><th>结果</th><th class="num">输入</th><th class="num">输出</th><th class="num">费用</th></tr></thead>
+        <tbody>${portalEvents.map(e => `
+          <tr>
+            <td>${e.time}</td><td>${e.key}</td><td class="mono">${e.model}</td>
+            <td>${String(e.result).startsWith('失败')?'<span class="tag is-danger is-small">'+e.result+'</span>':'<span class="tag is-success is-small">'+e.result+'</span>'}</td>
+            <td class="num">${fmt(e.input)}</td><td class="num">${fmt(e.output)}</td><td class="num">${fmtUSD(e.cost)}</td>
+          </tr>`).join('')}</tbody>
+      </table></div>`;
+  }
+
+  function pagePortalAccount(auth) {
+    return `
+      <div class="terminal-page-head"><div class="terminal-page-heading">
+        <h1 class="terminal-title">账户</h1>
+        <p class="terminal-subtitle">资料与密码 · 演示数据</p>
+      </div></div>
+      <div class="grid-two">
+        <div class="panel"><div class="panel-title">资料</div>
+          <dl class="fact-list">
+            <div class="fact-list-row"><dt>用户名</dt><dd class="mono">${auth.username}</dd></div>
+            <div class="fact-list-row"><dt>显示名称</dt><dd>${auth.display_name || '—'}</dd></div>
+          </dl>
+        </div>
+        <div class="panel"><div class="panel-title">修改密码</div>
           <div class="field"><label>当前密码</label><input type="password" placeholder="演示中不会真正修改" /></div>
-          <div class="field"><label>新密码</label><input type="password" placeholder="8–128 个字符" /></div>
-          <div class="field"><label>确认新密码</label><input type="password" /></div>
+          <div class="field"><label>新密码</label><input type="password" /></div>
           <button class="btn btn-primary" id="fake-password" type="button">保存（演示）</button>
         </div>
-      </div>
-    `;
+      </div>`;
   }
 
   function renderCreateModal() {
-    return `
-      <div class="modal-backdrop" id="modal-create">
-        <div class="modal" role="dialog" aria-modal="true">
-          <h3>创建密钥</h3>
-          <p>名称会显示在用量归因里。完整密钥只展示一次。</p>
-          <div class="field"><label>名称</label><input id="new-key-name" placeholder="例如：笔记本" value="演示密钥" /></div>
-          <div class="modal-actions">
-            <button class="btn btn-ghost" id="cancel-create" type="button">取消</button>
-            <button class="btn btn-primary" id="confirm-create" type="button">创建</button>
-          </div>
-        </div>
-      </div>`;
+    return `<div class="modal-backdrop"><div class="modal"><h3>创建密钥</h3><p>完整密钥只展示一次。</p>
+      <div class="field"><label>名称</label><input id="new-key-name" value="演示密钥" /></div>
+      <div class="modal-actions"><button class="btn btn-ghost" id="cancel-create" type="button">取消</button>
+      <button class="btn btn-primary" id="confirm-create" type="button">创建</button></div></div></div>`;
   }
-
   function renderIssuedModal() {
-    return `
-      <div class="modal-backdrop" id="modal-issued">
-        <div class="modal" role="dialog" aria-modal="true">
-          <h3>密钥已创建</h3>
-          <p>请立即复制并妥善保存。关闭后将无法再次查看完整密钥。<strong>（演示值）</strong></p>
-          <div class="secret"><span>${issuedSecret}</span><button class="btn btn-ghost" id="copy-secret" type="button">复制</button></div>
-          <p class="footer-note">Base URL：https://api.example.com/v1</p>
-          <div class="modal-actions"><button class="btn btn-primary" id="close-issued" type="button">我已保存</button></div>
-        </div>
-      </div>`;
+    return `<div class="modal-backdrop"><div class="modal"><h3>密钥已创建</h3>
+      <p>请立即复制保存。<strong>（演示值）</strong></p>
+      <div class="secret"><span>${issuedSecret}</span><button class="btn btn-ghost btn-sm" id="copy-secret" type="button">复制</button></div>
+      <div class="modal-actions"><button class="btn btn-primary" id="close-issued" type="button">我已保存</button></div></div></div>`;
   }
 
-  function bindShell() {
-    document.querySelectorAll('[data-nav]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        mobileNavOpen = false;
-        navigate(btn.getAttribute('data-nav'));
-      });
-    });
-    document.getElementById('brand-home')?.addEventListener('click', () => { mobileNavOpen = false; navigate('/overview'); });
-    document.getElementById('sign-out')?.addEventListener('click', () => {
-      saveAuth(null); issuedSecret = null; createOpen = false; mobileNavOpen = false; navigate('/login');
-    });
-    document.getElementById('toggle-collapse')?.addEventListener('click', () => {
-      collapsed = !collapsed;
-      localStorage.setItem(COLLAPSE_KEY, collapsed ? '1' : '0');
-      render();
-    });
-    document.getElementById('open-mobile-nav')?.addEventListener('click', () => { mobileNavOpen = true; render(); });
-    document.getElementById('mobile-mask')?.addEventListener('click', () => { mobileNavOpen = false; render(); });
-    document.getElementById('open-create')?.addEventListener('click', () => { createOpen = true; render(); });
-    document.getElementById('cancel-create')?.addEventListener('click', () => { createOpen = false; render(); });
+  function bindShell(auth) {
+    document.querySelectorAll('[data-nav]').forEach(btn => btn.addEventListener('click', () => {
+      mobileNavOpen = false; navigate(btn.getAttribute('data-nav'));
+    }));
+    document.getElementById('brand-home')?.addEventListener('click', () => { mobileNavOpen = false; navigate(homePath(auth)); });
+    document.getElementById('sign-out')?.addEventListener('click', () => { saveAuth(null); issuedSecret=null; createOpen=false; mobileNavOpen=false; navigate('/login'); });
+    document.getElementById('toggle-collapse')?.addEventListener('click', () => { collapsed=!collapsed; localStorage.setItem(COLLAPSE_KEY, collapsed?'1':'0'); render(); });
+    document.getElementById('open-mobile-nav')?.addEventListener('click', () => { mobileNavOpen=true; render(); });
+    document.getElementById('mobile-mask')?.addEventListener('click', () => { mobileNavOpen=false; render(); });
+    document.getElementById('toggle-theme')?.addEventListener('click', () => { setTheme(themeMode()==='dark'?'light':'dark'); render(); });
+    document.getElementById('open-create')?.addEventListener('click', () => { createOpen=true; render(); });
+    document.getElementById('cancel-create')?.addEventListener('click', () => { createOpen=false; render(); });
     document.getElementById('confirm-create')?.addEventListener('click', () => {
       const name = document.getElementById('new-key-name')?.value?.trim() || '演示密钥';
-      const rand = Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+      const rand = Math.random().toString(36).slice(2,12);
       issuedSecret = 'sk-omc-DEMO' + rand + 'DEMO';
-      sampleKeys.unshift({ id: Date.now(), name, prefix: issuedSecret.slice(0, 12), last4: issuedSecret.slice(-4), state: 'active', requests: 0, last_used: '—', created: new Date().toISOString().slice(0, 16).replace('T', ' ') });
-      createOpen = false; render();
+      portalKeys.unshift({ id: Date.now(), name, prefix: issuedSecret.slice(0,12), last4: issuedSecret.slice(-4), state: 'active', requests: 0, last_used: '—', created: new Date().toISOString().slice(0,16).replace('T',' ') });
+      createOpen=false; render();
     });
-    document.getElementById('close-issued')?.addEventListener('click', () => { issuedSecret = null; render(); });
+    document.getElementById('close-issued')?.addEventListener('click', () => { issuedSecret=null; render(); });
     document.getElementById('copy-secret')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(issuedSecret); } catch {} });
-    document.querySelectorAll('[data-revoke]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = Number(btn.getAttribute('data-revoke'));
-        const k = sampleKeys.find(x => x.id === id);
-        if (k && confirm(`撤销密钥「${k.name}」？（演示）`)) { k.state = 'revoked'; render(); }
-      });
-    });
-    document.getElementById('fake-password')?.addEventListener('click', () => alert('这是静态演示，密码不会被修改。'));
+    document.querySelectorAll('[data-revoke]').forEach(btn => btn.addEventListener('click', () => {
+      const id = Number(btn.getAttribute('data-revoke'));
+      const k = portalKeys.find(x => x.id === id);
+      if (k && confirm(`撤销「${k.name}」？（演示）`)) { k.state='revoked'; render(); }
+    }));
+    document.getElementById('fake-password')?.addEventListener('click', () => alert('静态演示，不会修改密码。'));
+    document.getElementById('fake-create-customer')?.addEventListener('click', () => alert('静态演示：真实产品里这里会打开创建客户表单。'));
   }
 
   window.addEventListener('hashchange', render);

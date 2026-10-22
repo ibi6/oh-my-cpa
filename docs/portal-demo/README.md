@@ -1,14 +1,14 @@
-# 客户门户静态演示（GitHub Pages）
+# 全原生控制台 / 客户门户静态演示（GitHub Pages）
 
-这是 Oh My CPA **P1 客户门户**的静态 UI 演示（左侧栏布局对齐原生控制台 AppLayout），托管在 GitHub Pages 上，方便在浏览器里点开预览。
+视觉与信息架构对齐真实 Oh My CPA 控制台（同一套主题 token、侧栏分组、页面密度）。  
+**唯一差别是权限：**
 
-- **不是**真实 Oh My CPA / CPA 后端
-- 页面里的用量、密钥、费用都是 **演示数据**
-- 登录任意非空密码即可进入（推荐 `trial` / `demo`）
+| 角色 | 登录后 | 侧栏 |
+| --- | --- | --- |
+| 管理员 | 原生控制台壳 | 运行 / 网关（含**客户账户**）/ 观测 / 插件 / 控制 |
+| 客户 | 客户门户壳 | 概览 / API 密钥 / 使用记录 / 账户（无管理菜单） |
 
-在线地址（启用 Pages 后）：
+- 全部为**演示数据**，不连接真实 CPA
+- 推荐：`admin` / `demo`（管理员），`trial` / `demo`（客户）
 
-- https://ibi6.github.io/oh-my-cpa/portal-demo/
-- https://ibi6.github.io/oh-my-cpa/ （跳转到上者）
-
-本地预览：用任意静态服务器打开本目录，例如 `python3 -m http.server`。
+在线：https://ibi6.github.io/oh-my-cpa/portal-demo/?v=native-dual
