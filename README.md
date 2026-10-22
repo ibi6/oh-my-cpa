@@ -23,6 +23,7 @@ MCP · Visualization · Management
 <br />
 
 **[Live Demo](https://omc-demo.junze.dev)** ·
+**[Customer portal demo (static UI)](https://ibi6.github.io/oh-my-cpa/portal-demo/)** ·
 [Install](#install) ·
 [Features](#features) ·
 [Agents and MCP](#agents-and-mcp) ·
@@ -46,6 +47,8 @@ signs in with CPA's management key.
 
 > [!TIP]
 > **[Try the Live Demo](https://omc-demo.junze.dev)**
+
+> This fork also hosts a [static customer-portal demo](https://ibi6.github.io/oh-my-cpa/portal-demo/) (sign-in, overview, keys, usage, account). It uses sample data and does **not** talk to a real CPA or sync keys.
 
 ## Screenshots
 
